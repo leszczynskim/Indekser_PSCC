@@ -5,6 +5,10 @@
 #pragma once
 #include "afxwin.h"
 #include "afxdialogex.h"
+#include "afxcmn.h"
+#include <boost\filesystem.hpp>
+
+using namespace boost::filesystem;
 
 
 // CMFCApplication5Dlg dialog
@@ -29,15 +33,16 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	void Recurse(LPCTSTR);
+	void LoadFiles( const path & dir_path, HTREEITEM *root, bool *isFound);
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListBox m_Values;
 	CArray<double, double> Values;
 	afx_msg void OnLbnSelchangeList1();
 	afx_msg void OnBnClickedButton1();
 	CButton m_fileButton;
 	CStatic m_PictureControl;
-	afx_msg void OnBnClickedButton2();
-	afx_msg void OnBnClickedButton3();
+	CTreeCtrl m_tree;
+	afx_msg void OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnTvnSingleExpandTree3(NMHDR *pNMHDR, LRESULT *pResult);
 };
