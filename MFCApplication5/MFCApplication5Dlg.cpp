@@ -1,17 +1,9 @@
 
 // MFCApplication5Dlg.cpp : implementation file
 //
-
 #include "stdafx.h"
-#include "MFCApplication5.h"
 #include "MFCApplication5Dlg.h"
-#include "afxdialogex.h"
-#include "FolderDlg.h"
-#include <vector>
-#include <string.h>
-#include <map>
-#include <boost/filesystem.hpp>
-#include <iostream>
+#include "Fixture.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -195,8 +187,17 @@ void CMFCApplication5Dlg::LoadFiles(const path & dir_path, HTREEITEM *root, bool
 			else
 				m_tree.InsertItem(itr->path().filename().c_str(), *root);
 		}
+		else if (itr->path().filename() == "Fixtures.xml")
+		{
+			std::vector<Fixture> v = LoadFixtures(itr->path().string());
+		}
+		else if (itr->path().filename() == "Toolbox.xml")
+		{
+		}
 	}
 }
+
+
 
 void CMFCApplication5Dlg::OnLbnSelchangeList1()
 {
@@ -272,4 +273,34 @@ void CMFCApplication5Dlg::OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult)
 		m_bitmap.Attach(startBitmap);
 		m_PictureControl.SetBitmap(m_bitmap);
 	}
+}
+
+std::vector<Fixture> CMFCApplication5Dlg::LoadFixtures(const std::string &filename)
+{
+	std::vector<Fixture> fixtures;
+	using boost::property_tree::ptree;
+	ptree pt;
+	read_xml(filename, pt);
+	
+	BOOST_FOREACH(ptree::value_type &v, pt.get_child("GC_ITFixtureData.fixtures"))
+	{
+		if (v.first == "GC_ITFixture")
+		{
+			Fixture f;
+			f.make = v.second.get<std::string>("make");
+			f.file = v.second.get<string>("file");
+			f.name = v.second.get<string>("name");
+			f.fixture_type = v.second.get<int>("fixture_type");
+			f.user_type = v.second.get_optional<int>("user_type");
+			f.metric = v.second.get<int>("metric");
+			f.match = v.second.get<int>("match");
+			f.num_sim_files = v.second.get<int>("num_sim_files");
+			f.chuck_width = v.second.get<float>("chuck_width");
+			f.gb_depth = v.second.get<float>("gb_depth");
+			f.gb_pullback_dist = v.second.get<float>("gb_pullback_dist");
+			//f.file_path = v.second.get<string>("file_path");
+			fixtures.push_back(f);
+		}		
+	}
+	return fixtures;
 }

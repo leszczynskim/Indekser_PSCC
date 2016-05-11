@@ -6,7 +6,18 @@
 #include "afxwin.h"
 #include "afxdialogex.h"
 #include "afxcmn.h"
-#include <boost\filesystem.hpp>
+#include "stdafx.h"
+#include "MFCApplication5.h"
+#include "FolderDlg.h"
+#include <vector>
+#include <string.h>
+#include <map>
+#include <boost/filesystem.hpp>
+#include <iostream>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/foreach.hpp>
+#include "Fixture.h"
 
 using namespace boost::filesystem;
 
@@ -34,7 +45,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	void Recurse(LPCTSTR);
 	void LoadFiles( const path & dir_path, HTREEITEM *root, bool *isFound);
-
+	std::vector<Fixture> LoadFixtures(const std::string &filename);
 	DECLARE_MESSAGE_MAP()
 public:
 	CArray<double, double> Values;
