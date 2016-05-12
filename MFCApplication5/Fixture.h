@@ -26,5 +26,6 @@ public:
 	float gb_pullback_dist;
 
 	string file_path;
+	int check_sum;
 };
 

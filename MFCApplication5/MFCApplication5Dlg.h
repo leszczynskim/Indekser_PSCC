@@ -46,6 +46,9 @@ protected:
 	void Recurse(LPCTSTR);
 	void LoadFiles( const path & dir_path, HTREEITEM *root, bool *isFound);
 	std::vector<Fixture> LoadFixtures(const std::string &filename);
+	void CreateDB();
+	void ExecuteCommand(char * command);
+	sqlite3* GetConnection();
 	DECLARE_MESSAGE_MAP()
 public:
 	CArray<double, double> Values;
@@ -56,4 +59,6 @@ public:
 	CTreeCtrl m_tree;
 	afx_msg void OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnTvnSingleExpandTree3(NMHDR *pNMHDR, LRESULT *pResult);
+
+	const static char* DATABASE_NAME;
 };

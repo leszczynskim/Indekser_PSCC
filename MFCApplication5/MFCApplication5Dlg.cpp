@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MFCApplication5Dlg.h"
 #include "Fixture.h"
+#include "sqlite3.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,7 +18,7 @@ std::map<CString, CString> Items;
 CString last;
 int index = 0;
 LPCTSTR m_strFolderPath;
-
+const char* CMFCApplication5Dlg::DATABASE_NAME = "IndexerDB.db";
 
 CMFCApplication5Dlg::CMFCApplication5Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMFCApplication5Dlg::IDD, pParent)
@@ -60,10 +61,6 @@ BOOL CMFCApplication5Dlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
-
-// If you add a minimize button to your dialog, you will need the code below
-//  to draw the icon.  For MFC applications using the document/view model,
-//  this is automatically done for you by the framework.
 
 void CMFCApplication5Dlg::OnPaint()
 {
@@ -197,8 +194,6 @@ void CMFCApplication5Dlg::LoadFiles(const path & dir_path, HTREEITEM *root, bool
 	}
 }
 
-
-
 void CMFCApplication5Dlg::OnLbnSelchangeList1()
 {
 	//int i = m_Values.GetCaretIndex();
@@ -222,6 +217,8 @@ void CMFCApplication5Dlg::OnBnClickedButton1()
 	m_strFolderPath = dlg.GetFolderPath();
 	LoadFiles(m_strFolderPath, NULL, &b);
 	}*/
+
+	CreateDB();
 }
 
 void CMFCApplication5Dlg::OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult)
@@ -281,7 +278,7 @@ std::vector<Fixture> CMFCApplication5Dlg::LoadFixtures(const std::string &filena
 	using boost::property_tree::ptree;
 	ptree pt;
 	read_xml(filename, pt);
-	
+
 	BOOST_FOREACH(ptree::value_type &v, pt.get_child("GC_ITFixtureData.fixtures"))
 	{
 		if (v.first == "GC_ITFixture")
@@ -300,7 +297,62 @@ std::vector<Fixture> CMFCApplication5Dlg::LoadFixtures(const std::string &filena
 			f.gb_pullback_dist = v.second.get<float>("gb_pullback_dist");
 			//f.file_path = v.second.get<string>("file_path");
 			fixtures.push_back(f);
-		}		
+		}
 	}
 	return fixtures;
+}
+
+void CMFCApplication5Dlg::CreateDB() {
+	char *sql;
+
+	sql = "CREATE TABLE FIXTURES("  \
+		"ID INT PRIMARY KEY     NOT NULL," \
+		"MAKE           TEXT," \
+		"FILE           TEXT    NOT NULL," \
+		"NAME           TEXT    NOT NULL," \
+		"FIXTURE_TYPE   INT," \
+		"USER_TYPE_TYPE	INT," \
+		"METRIC			INT," \
+		"MATCH			INT," \
+		"NUM_SIM_FILES	INT," \
+		"CHUCK_WIDTH	FLOAT," \
+		"GB_DEPTH		FLOAT," \
+		"GB_PULLBACK_DIST	FLOAT," \
+		"FILE_PATH		TEXT    NOT NULL );";
+	
+	ExecuteCommand(sql);
+}
+
+void CMFCApplication5Dlg::ExecuteCommand(char *command)
+{
+	int  rc;
+	char *zErrMsg = 0;
+	sqlite3 *db = GetConnection();
+
+	rc = sqlite3_exec(db, command, NULL, 0, &zErrMsg);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+	}
+	else {
+		fprintf(stdout, "Command: %s not executed!", command);
+	}
+	sqlite3_close(db);
+}
+
+sqlite3* CMFCApplication5Dlg::GetConnection()
+{
+	int  rc; 
+	sqlite3 *db;
+	rc = sqlite3_open(DATABASE_NAME, &db);
+
+	if (rc) {
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		return NULL;
+	}
+	else {
+		fprintf(stdout, "Opened database successfully\n");
+	}
+
+	return db;
 }
