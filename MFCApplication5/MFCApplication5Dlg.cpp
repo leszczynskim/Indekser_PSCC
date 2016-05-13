@@ -31,6 +31,8 @@ void CMFCApplication5Dlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON1, m_fileButton);
 	DDX_Control(pDX, IDC_PICTURE, m_PictureControl);
+	DDX_Control(pDX, IDC_RICHEDIT22, m_richEditSearch);
+	DDX_Control(pDX, IDC_BUTTON2, m_searchButton);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplication5Dlg, CDialogEx)
@@ -39,6 +41,8 @@ BEGIN_MESSAGE_MAP(CMFCApplication5Dlg, CDialogEx)
 	ON_LBN_SELCHANGE(IDC_LIST1, &CMFCApplication5Dlg::OnLbnSelchangeList1)
 	ON_BN_CLICKED(IDC_BUTTON1, &CMFCApplication5Dlg::OnBnClickedButton1)
 	ON_NOTIFY(TVN_SELCHANGED, 0x1221, &CMFCApplication5Dlg::OnTvnItemChangedTree1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMFCApplication5Dlg::OnBnClickedButton2)
+	ON_EN_CHANGE(IDC_RICHEDIT22, &CMFCApplication5Dlg::OnEnChangeRichedit22)
 END_MESSAGE_MAP()
 
 
@@ -323,6 +327,23 @@ void CMFCApplication5Dlg::CreateDB() {
 	ExecuteCommand(sql);
 }
 
+sqlite3* CMFCApplication5Dlg::GetConnection()
+{
+	int  rc;
+	sqlite3 *db;
+	rc = sqlite3_open(DATABASE_NAME, &db);
+
+	if (rc) {
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		return NULL;
+	}
+	else {
+		fprintf(stdout, "Opened database successfully\n");
+	}
+
+	return db;
+}
+
 void CMFCApplication5Dlg::ExecuteCommand(char *command)
 {
 	int  rc;
@@ -340,19 +361,21 @@ void CMFCApplication5Dlg::ExecuteCommand(char *command)
 	sqlite3_close(db);
 }
 
-sqlite3* CMFCApplication5Dlg::GetConnection()
+
+void CMFCApplication5Dlg::OnBnClickedButton2()
 {
-	int  rc; 
-	sqlite3 *db;
-	rc = sqlite3_open(DATABASE_NAME, &db);
+	CString text;
+	m_richEditSearch.GetWindowTextW(text);
 
-	if (rc) {
-		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-		return NULL;
-	}
-	else {
-		fprintf(stdout, "Opened database successfully\n");
-	}
+}
 
-	return db;
+
+void CMFCApplication5Dlg::OnEnChangeRichedit22()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialogEx::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
 }

@@ -18,6 +18,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
 #include "Fixture.h"
+#include "sqlite3.h"
 
 using namespace boost::filesystem;
 
@@ -49,6 +50,7 @@ protected:
 	void CreateDB();
 	void ExecuteCommand(char * command);
 	sqlite3* GetConnection();
+	
 	DECLARE_MESSAGE_MAP()
 public:
 	CArray<double, double> Values;
@@ -61,4 +63,8 @@ public:
 	afx_msg void OnTvnSingleExpandTree3(NMHDR *pNMHDR, LRESULT *pResult);
 
 	const static char* DATABASE_NAME;
+	CRichEditCtrl m_richEditSearch;
+	CButton m_searchButton;
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnEnChangeRichedit22();
 };

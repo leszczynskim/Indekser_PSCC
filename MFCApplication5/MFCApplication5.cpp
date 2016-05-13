@@ -24,7 +24,7 @@ CMFCApplication5App::CMFCApplication5App()
 {
 	// support Restart Manager
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
-
+	AfxInitRichEdit2();
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }
@@ -39,6 +39,7 @@ CMFCApplication5App theApp;
 
 BOOL CMFCApplication5App::InitInstance()
 {
+//TODO: call AfxInitRichEdit2() to initialize richedit2 library.
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
