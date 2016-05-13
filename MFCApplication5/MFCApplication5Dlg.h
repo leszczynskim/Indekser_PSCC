@@ -44,14 +44,13 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	void Recurse(LPCTSTR);
-	void LoadFiles( const path & dir_path, HTREEITEM *root, bool *isFound);
+	void LoadFilesBuildDB( const path & dir_path, HTREEITEM *root, bool *isFound,path* itdParent);
 	std::vector<Fixture> LoadFixtures(const std::string &filename);
 	void CreateDB();
-	void ExecuteCommand(char * command);
+	void ExecuteCommand(const char * command, std::vector<std::vector<string>> *result);
+	string GetDateOfModification(boost::filesystem::path p, bool *isModified, bool *doesExsist);
 	sqlite3* GetConnection();
-	vector<CString> SplitCString(CString text, LPCWSTR separator);
-	
+	vector<CString> SplitCString(CString text, LPCWSTR separator);	
 	DECLARE_MESSAGE_MAP()
 public:
 	CArray<double, double> Values;
@@ -61,8 +60,6 @@ public:
 	CStatic m_PictureControl;
 	CTreeCtrl m_tree;
 	afx_msg void OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnTvnSingleExpandTree3(NMHDR *pNMHDR, LRESULT *pResult);
-
 	const static char* DATABASE_NAME;
 	CRichEditCtrl m_richEditSearch;
 	CButton m_searchButton;

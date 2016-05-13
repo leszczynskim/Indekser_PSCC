@@ -5,7 +5,10 @@
 #include "MFCApplication5Dlg.h"
 #include "Fixture.h"
 #include "sqlite3.h"
-
+#include <chrono>
+#include <locale>
+#include <codecvt>
+#pragma warning(disable : 4996)
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -105,94 +108,59 @@ bool hasEnding(std::string const &fullString, std::string const &ending) {
 	}
 }
 
-void CMFCApplication5Dlg::Recurse(LPCTSTR pstr)
-{
-	CFileFind finder;
-	CString strWildcard(pstr);
-	strWildcard += _T("\\*.ITD");
-	BOOL bWorking, isITD = finder.FindFile(strWildcard);
-
-	HTREEITEM hTree = NULL;
-	if (!isITD)
-	{
-		strWildcard = pstr;
-		strWildcard += _T("\\*.*");
-		bWorking = finder.FindFile(strWildcard);
-
-		while (bWorking)
-		{
-			bWorking = finder.FindNextFile();
-			if (finder.IsDots())
-				continue;
-
-			CString ext = finder.GetFileName().Right(3);
-			if (ext == "bmp" && !last.IsEmpty())
-			{
-				CString tmp = last + ":" + finder.GetFileTitle();
-				Items.insert(pair<CString, CString>(tmp, finder.GetFilePath()));
-				m_tree.InsertItem(tmp, hTree);
-
-			}
-			if (finder.IsDirectory())
-			{
-				hTree = m_tree.InsertItem(finder.GetFileTitle(), TVI_ROOT);
-				CString str = finder.GetFilePath();
-				Recurse(str);
-			}
-		}
-	}
-	while (bWorking)
-	{
-		bWorking = finder.FindNextFile();
-		if (finder.IsDots())
-			continue;
-		last = finder.GetFileTitle();
-	}
-
-
-
-	finder.Close();
-}
-
-void CMFCApplication5Dlg::LoadFiles(const path & dir_path, HTREEITEM *root, bool *isFound)
+void CMFCApplication5Dlg::LoadFilesBuildDB(const path & dir_path, HTREEITEM *root, bool *isFound, path* itdParent)
 {
 	if (!exists(dir_path))
 		return;
 	directory_iterator end_itr;
 	bool localIsFound = false;
+	std::vector<path> directories;
 	for (directory_iterator itr(dir_path); itr != end_itr; ++itr)
 	{
-		if (is_directory(itr->status()))
-		{
-			*isFound = false;
-			HTREEITEM rootTmp = NULL;
-			if (!root)
-				rootTmp = m_tree.InsertItem(itr->path().filename().c_str(), TVI_ROOT);
-			else
-				rootTmp = m_tree.InsertItem(itr->path().filename().c_str(), *root);
-			LoadFiles(itr->path(), &rootTmp, isFound);
-			if (!(*isFound))
-			{
-				m_tree.DeleteItem(rootTmp);
-				if (localIsFound)
-					*isFound = true;
-			}
-		}
+		if (is_directory(itr->status())) 
+			directories.push_back(itr->path());
 		if (itr->path().extension() == ".bmp")
 		{
 			localIsFound = true;
 			*isFound = true;
-			if (!root)
-				m_tree.InsertItem(itr->path().filename().c_str(), TVI_ROOT);
-			else
-				m_tree.InsertItem(itr->path().filename().c_str(), *root);
+			if (!root) m_tree.InsertItem(itr->path().filename().c_str(), TVI_ROOT);
+			else m_tree.InsertItem(itr->path().filename().c_str(), *root);
 		}
-		else if (itr->path().filename() == "Fixtures.xml")
+		else if (itr->path().extension() == ".ITD" || itr->path().filename() == "Fixtures.xml" || itr->path().filename() == "Toolblocks.xml")
 		{
-			std::vector<Fixture> v = LoadFixtures(itr->path().string());
+			if (itr->path().extension() == ".ITD") *itdParent = itr->path();
+			bool isNotModified,doesExist;
+			string date = GetDateOfModification(itr->path(), &isNotModified,&doesExist);
+			if (!doesExist)
+			{
+				std::vector<std::vector<string>> result;
+				using convert_typeX = std::codecvt_utf8<wchar_t>;
+				std::wstring_convert<convert_typeX, wchar_t> converter;
+				std::wstring wide = converter.from_bytes(date);
+				wstring comm(L"INSERT INTO FILETABLE (filepath,dateofmod) VALUES ('");
+				comm += itr->path().c_str();
+				comm += L"','" + wide + L"');";
+				string s = converter.to_bytes(comm);
+				ExecuteCommand(s.c_str(), NULL);
+			}
+			else if (!isNotModified)
+			{
+			}
 		}
-		else if (itr->path().filename() == "Toolbox.xml")
+	}
+	for (path p:directories)
+	{
+		*isFound = false;
+		HTREEITEM rootTmp = NULL;
+		if (!root)
+			rootTmp = m_tree.InsertItem(p.filename().c_str(), TVI_ROOT);
+		else
+			rootTmp = m_tree.InsertItem(p.filename().c_str(), *root);
+		LoadFilesBuildDB(p, &rootTmp, isFound,itdParent);
+		if (!(*isFound))
 		{
+			m_tree.DeleteItem(rootTmp);
+			if (localIsFound) *isFound = true;
 		}
 	}
 }
@@ -209,19 +177,19 @@ void CMFCApplication5Dlg::OnLbnSelchangeList1()
 
 void CMFCApplication5Dlg::OnBnClickedButton1()
 {
+	CreateDB();
 	CFolderDialog dlg(_T("Root folder is C:\ "), NULL, this);
 	dlg.SetRootFolder(_T("C:\input_do_ineksera"));
 	LPCTSTR m_strDisplayName;
 	m_strFolderPath = L"C:\\input_do_ineksera";
 	bool b = false;
-	LoadFiles(m_strFolderPath, NULL, &b);
+	path p;
+	LoadFilesBuildDB(m_strFolderPath, NULL, &b,&p);
 	/*if( dlg.DoModal() == IDOK  )
 	{
 	m_strFolderPath = dlg.GetFolderPath();
 	LoadFiles(m_strFolderPath, NULL, &b);
 	}*/
-
-	CreateDB();
 }
 
 void CMFCApplication5Dlg::OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult)
@@ -298,32 +266,21 @@ std::vector<Fixture> CMFCApplication5Dlg::LoadFixtures(const std::string &filena
 			f.chuck_width = v.second.get<float>("chuck_width");
 			f.gb_depth = v.second.get<float>("gb_depth");
 			f.gb_pullback_dist = v.second.get<float>("gb_pullback_dist");
-			//f.file_path = v.second.get<string>("file_path");
 			fixtures.push_back(f);
+			// add to db
 		}
 	}
 	return fixtures;
 }
 
 void CMFCApplication5Dlg::CreateDB() {
-	char *sql;
-
-	sql = "CREATE TABLE FIXTURES("  \
-		"ID INT PRIMARY KEY     NOT NULL," \
-		"MAKE           TEXT," \
-		"FILE           TEXT    NOT NULL," \
-		"NAME           TEXT    NOT NULL," \
-		"FIXTURE_TYPE   INT," \
-		"USER_TYPE_TYPE	INT," \
-		"METRIC			INT," \
-		"MATCH			INT," \
-		"NUM_SIM_FILES	INT," \
-		"CHUCK_WIDTH	FLOAT," \
-		"GB_DEPTH		FLOAT," \
-		"GB_PULLBACK_DIST	FLOAT," \
-		"FILE_PATH		TEXT    NOT NULL );";
-	
-	ExecuteCommand(sql);
+	std::ifstream fin;
+	fin.exceptions(ios::badbit | ios::failbit | ios::eofbit);
+	fin.open("script.txt");
+	std::string contents((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
+	auto x = contents.c_str();
+	fin.close();
+	ExecuteCommand(contents.c_str(),NULL);
 }
 
 sqlite3* CMFCApplication5Dlg::GetConnection()
@@ -331,43 +288,61 @@ sqlite3* CMFCApplication5Dlg::GetConnection()
 	int  rc;
 	sqlite3 *db;
 	rc = sqlite3_open(DATABASE_NAME, &db);
-
 	if (rc) {
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		return NULL;
 	}
-	else {
-		fprintf(stdout, "Opened database successfully\n");
-	}
-
 	return db;
 }
 
-void CMFCApplication5Dlg::ExecuteCommand(char *command)
+int command_callback(void * p_data, int num_fields, char ** p_fields, char ** p_col_names)
+{
+	std::vector<std::vector<string>>* records = static_cast<std::vector<std::vector<string>>*>(p_data);
+	try {
+		records->emplace_back(p_fields, p_fields + num_fields);
+	}
+	catch (...) {
+		return 1;
+	}
+	return 0;
+}
+void CMFCApplication5Dlg::ExecuteCommand(const char *command, std::vector<std::vector<string>>* result)
 {
 	int  rc;
 	char *zErrMsg = 0;
 	sqlite3 *db = GetConnection();
-
-	rc = sqlite3_exec(db, command, NULL, 0, &zErrMsg);
+	if (!result) rc = sqlite3_exec(db, command, NULL, 0, &zErrMsg);
+	else rc = sqlite3_exec(db, command, command_callback, result, &zErrMsg);
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 	}
-	else {
-		fprintf(stdout, "Command: %s not executed!", command);
-	}
 	sqlite3_close(db);
 }
 
+string CMFCApplication5Dlg::GetDateOfModification(boost::filesystem::path p, bool *isModified, bool *doesExsist)
+{
+	std::time_t t = boost::filesystem::last_write_time(p);
+	char buff[20];
+	strftime(buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&t));
+	std::vector<std::vector<string>> result;
+	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	std::wstring_convert<convert_typeX, wchar_t> converter;
+	wstring command(L"Select dateofmod from filetable where filepath='");
+	command += p.c_str() + wstring(L"'");
+	auto s = converter.to_bytes(command);
+	ExecuteCommand(s.c_str(), &result);
+	string date(buff);
+	*doesExsist = result.size() != 0;
+	*isModified = date != result[0][0];
+	return date;
+}
 
 void CMFCApplication5Dlg::OnBnClickedButton2()
 {
 	CString text;
 	m_richEditSearch.GetWindowTextW(text);
-	
 	vector<CString> lines = SplitCString(text, L"\n");
-	
 	for each (CString line in lines)
 	{
 		vector<CString> splittedLine = SplitCString(line, L"=");
