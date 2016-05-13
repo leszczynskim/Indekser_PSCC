@@ -50,6 +50,7 @@ protected:
 	void CreateDB();
 	void ExecuteCommand(char * command);
 	sqlite3* GetConnection();
+	vector<CString> SplitCString(CString text, LPCWSTR separator);
 	
 	DECLARE_MESSAGE_MAP()
 public:

@@ -42,7 +42,6 @@ BEGIN_MESSAGE_MAP(CMFCApplication5Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CMFCApplication5Dlg::OnBnClickedButton1)
 	ON_NOTIFY(TVN_SELCHANGED, 0x1221, &CMFCApplication5Dlg::OnTvnItemChangedTree1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMFCApplication5Dlg::OnBnClickedButton2)
-	ON_EN_CHANGE(IDC_RICHEDIT22, &CMFCApplication5Dlg::OnEnChangeRichedit22)
 END_MESSAGE_MAP()
 
 
@@ -366,16 +365,27 @@ void CMFCApplication5Dlg::OnBnClickedButton2()
 {
 	CString text;
 	m_richEditSearch.GetWindowTextW(text);
-
+	
+	vector<CString> lines = SplitCString(text, L"\n");
+	
+	for each (CString line in lines)
+	{
+		vector<CString> splittedLine = SplitCString(line, L"=");
+		vector<CString> arguments = SplitCString(splittedLine[1], L";");
+	}
 }
 
-
-void CMFCApplication5Dlg::OnEnChangeRichedit22()
+vector<CString> CMFCApplication5Dlg::SplitCString(CString text, LPCWSTR separator)
 {
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialogEx::OnInitDialog()
-	// function and call CRichEditCtrl().SetEventMask()
-	// with the ENM_CHANGE flag ORed into the mask.
+	int index = 0;
+	vector<CString> result;
+	CString tmp;
+	tmp = text.Tokenize(separator, index);
+	while (tmp != "")
+	{
+		result.push_back(tmp);
+		tmp = text.Tokenize(separator, index);
+	}
 
-	// TODO:  Add your control notification handler code here
+	return result;
 }
