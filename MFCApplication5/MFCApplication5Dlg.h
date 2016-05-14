@@ -19,7 +19,9 @@
 #include <boost/foreach.hpp>
 #include "Fixture.h"
 #include "sqlite3.h"
-
+#define FIXTURE 2
+#define TOOLBLOCK 1
+#define ITD 0
 using namespace boost::filesystem;
 
 
@@ -45,12 +47,14 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	void LoadFilesBuildDB( const path & dir_path, HTREEITEM *root, bool *isFound,path* itdParent);
-	std::vector<Fixture> LoadFixtures(const std::string &filename);
-	void CreateDB();
-	void ExecuteCommand(const char * command, std::vector<std::vector<string>> *result);
-	string GetDateOfModification(boost::filesystem::path p, bool *isModified, bool *doesExsist);
-	sqlite3* GetConnection();
-	vector<CString> SplitCString(CString text, LPCWSTR separator);	
+	void LoadItemsFromXml(const std::string &filename, const std::string &itdParent, string children, string item, int type, 
+		string(*getString)(boost::property_tree::ptree::value_type *v,string parent));
+	void LoadCorrectFile(const std::string & filename, std::string date, const std::string rootFile, int type);
+	void InsertFileInDB(const std::string &filename, std::string date, const std::string rootFile, int type);
+	void SearchDirectories(std::vector<path> *directories, bool *isFound, HTREEITEM *root, path* itdParent, bool *localIsFound);
+	void GetType(const path *p, bool * isFileOk, int *type, path *itdParent);
+	void UpdateFileInDB(int type, string id, const std::string & filename, std::string date, const std::string rootFile);
+	std::vector<CString> SplitCString(CString text, LPCWSTR separator);	
 	DECLARE_MESSAGE_MAP()
 public:
 	CArray<double, double> Values;
@@ -60,7 +64,6 @@ public:
 	CStatic m_PictureControl;
 	CTreeCtrl m_tree;
 	afx_msg void OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult);
-	const static char* DATABASE_NAME;
 	CRichEditCtrl m_richEditSearch;
 	CButton m_searchButton;
 	afx_msg void OnBnClickedButton2();
