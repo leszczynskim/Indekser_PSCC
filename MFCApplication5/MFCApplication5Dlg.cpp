@@ -3,13 +3,9 @@
 //
 #include "stdafx.h"
 #include "MFCApplication5Dlg.h"
-#include "Fixture.h"
 #include "sqlite3.h"
 #include "DBOperations.h"
-#include <chrono>
-#include <locale>
-#include <codecvt>
-#include <unordered_map>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #define FilePair(x, y) std::make_pair(std::string(x),bool(y))
@@ -34,7 +30,7 @@ string GetFixture(boost::property_tree::ptree::value_type *v, string itdParentId
 	string s = x.is_initialized() ? ss.str() : "NULL";
 	ss.clear();
 	ss.str("");
-	ss << "insert into Fixture (make,file,name,fixture_type,user_type,metric,match,num_sim_files,chuck_width,gb_depth,gb_pullback_dist,idt_id) values('"
+	ss << "insert into Fixture (make,file,name,fixture_type,user_type,metric,match,num_sim_files,chuck_width,gb_depth,gb_pullback_dist,itd_id) values('"
 		<< v->second.get<std::string>("make") << "','" << v->second.get<string>("file")
 		<< "','" << v->second.get<string>("name") << "'," << v->second.get<int>("fixture_type")
 		<< "," << s << "," << v->second.get<int>("metric")
@@ -58,7 +54,7 @@ string GetToolblock(boost::property_tree::ptree::value_type *v, string itdParent
 	ss.clear();
 	ss.str("");
 	ss << "insert into Toolblock (make,file,name,metric,offset_x,offset_y,offset_z,num_orientations,match,num_sim_files,tool_pos,\
-		cs,cs_name,match_tool_pos,block_types,shank_sizes,default_orient,default_cs,idt_id) values('"
+		cs,cs_name,match_tool_pos,block_types,shank_sizes,default_orient,default_cs,itd_id) values('"
 		<< v->second.get<std::string>("make") << "','" << v->second.get<string>("file") << "','"
 		<< v->second.get<string>("name") << "'," << v->second.get<int>("metric") << ","
 		<< v->second.get<bool>("offset_x") << "," << v->second.get<bool>("offset_y") << ","
@@ -103,7 +99,7 @@ void CMFCApplication5Dlg::LoadItemsFromXml(const std::string & filename, const s
 	}
 }
 
-void CMFCApplication5Dlg::LoadCorrectFile(const std::string & filename, std::string date, const std::string rootFile, int type)
+void CMFCApplication5Dlg::LoadCorrectFile(const std::string & filename, const std::string rootFile, int type)
 {
 	switch (type)
 	{
@@ -114,8 +110,37 @@ void CMFCApplication5Dlg::LoadCorrectFile(const std::string & filename, std::str
 		LoadItemsFromXml(filename, rootFile, "GC_ITBlockData.blocks", "GC_ITBlock", TOOLBLOCK, GetToolblock);
 		break;
 	case ITD:
+		LoadITDFile(filename);
 		break;
 	}
+}
+
+void CMFCApplication5Dlg::LoadITDFile(const std::string & filename)
+{
+	std::string line;
+	string com = "select id from filetable where filepath='"+ filename + "'";
+	std::vector<std::vector<string>> res;
+	DBOperations::ExecuteCommand(com.c_str(), &res);
+	string file_id = res[0][0];
+	std::ifstream infile(filename);
+	ostringstream ss;
+	ss << "insert into itd (description) values('";
+	while (std::getline(infile, line))
+	{
+		if (line == "ints_begin" || line == "ints_end" || line == "doubles_begin" || line == "doubles_end" || line == "strs_begin"
+			|| line == "strs_end" || line == "int_arrays_begin" || line == "int_arrays_end" || line == "double_arrays_begin"
+			|| line == "double_arrays_end") continue;
+		int x = 0;
+		boost::replace_all(line, " ", "=");
+		boost::algorithm::erase_all(line, "\"");
+		if(!line.empty()) ss << line << ";";
+	}
+	ss << "')";
+	int id = 0;
+	DBOperations::ExecuteCommand(ss.str().c_str(), NULL, true, &id);
+	ostringstream tmp;
+	tmp << "Insert into file_object (file_id,item_id,typ_id) values(" << file_id << "," << id << ",0);";
+	DBOperations::ExecuteCommand(tmp.str().c_str(), NULL);
 }
 
 void CMFCApplication5Dlg::InsertFileInDB(const std::string & filename, std::string date, const std::string rootFile, int type)
@@ -123,7 +148,7 @@ void CMFCApplication5Dlg::InsertFileInDB(const std::string & filename, std::stri
 	string comm("INSERT INTO FILETABLE (filepath,dateofmod) VALUES ('");
 	comm += filename + "','" + date + "');";
 	DBOperations::ExecuteCommand(comm.c_str(), NULL);
-	LoadCorrectFile(filename, date, rootFile, type);
+	LoadCorrectFile(filename, rootFile, type);
 }
 
 void CMFCApplication5Dlg::SearchDirectories(std::vector<path> *directories, bool *isFound, HTREEITEM *root, path* itdParent, bool *localIsFound)
@@ -190,14 +215,8 @@ void CMFCApplication5Dlg::LoadFilesBuildDB(const path & dir_path, HTREEITEM *roo
 		filesInDb[x] = true;
 		bool isModified, doesExist;
 		string date = DBOperations::GetDateOfModification(itr->path(), &isModified, &doesExist, &id);
-		if (!doesExist)
-		{
-			InsertFileInDB(x, date, itdParent->string(), type);
-		}
-		else if (isModified)
-		{
-			UpdateFileInDB(type, id, x, date, itdParent->string());
-		}
+		if (!doesExist)	InsertFileInDB(x, date, itdParent->string(), type);
+		else if (isModified) UpdateFileInDB(type, id, x, date, itdParent->string());
 	}
 	SearchDirectories(&directories, isFound, root, itdParent, &localIsFound);
 }
@@ -219,8 +238,9 @@ void CMFCApplication5Dlg::UpdateFileInDB(int type, string id, const std::string 
 		join filetable ft on ft.id = fo.file_id	where ft.id = " << id << "); delete from file_object where file_id = " << id << ";"
 		<< "update filetable set dateofmod = '" << date << "' where id = " << id << ";";
 	DBOperations::ExecuteCommand(ss.str().c_str(), NULL);
-	LoadCorrectFile(filename, date, rootFile, type);
+	LoadCorrectFile(filename, rootFile, type);
 }
+
 
 CMFCApplication5Dlg::CMFCApplication5Dlg(CWnd* pParent)
 	: CDialogEx(CMFCApplication5Dlg::IDD, pParent)
@@ -315,19 +335,14 @@ void CMFCApplication5Dlg::OnBnClickedButton1()
 	path p;
 	LoadFilesBuildDB(m_strFolderPath, NULL, &b,&p);
 	for (auto &x : filesInDb)
-	{
-		if (!x.second)
-		{
-			//usunac
-		}
-	}
+		if (!x.second) 
+			DBOperations::RemoveFileFromDB(x.first);
 	/*if( dlg.DoModal() == IDOK  )
 	{
 	m_strFolderPath = dlg.GetFolderPath();
 	LoadFiles(m_strFolderPath, NULL, &b);
 	}*/
 }
-
 void CMFCApplication5Dlg::OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	NMTVITEMCHANGE *pNMTVItemChange = reinterpret_cast<NMTVITEMCHANGE*>(pNMHDR);

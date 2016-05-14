@@ -70,6 +70,35 @@ std::string DBOperations::GetDateOfModification(boost::filesystem::path p, bool 
 	return date;
 }
 
+void DBOperations::RemoveFileFromDB(std::string filename)
+{
+	string com = "select id from filetable where filepath='" + filename + "'";
+	std::vector<std::vector<string>> res, res1;
+	DBOperations::ExecuteCommand(com.c_str(), &res);
+	com = "select ft.id, fo.item_id, fo.typ_id from filetable ft join file_object fo on fo.file_id = ft.id where ft.id = " + res[0][0];
+	DBOperations::ExecuteCommand(com.c_str(), &res1);
+	int typ = boost::lexical_cast<int>(res1[0][2]);
+	string tableName = "";
+	switch (typ)
+	{
+	case FIXTURE:
+		tableName = "fixture";
+		break;
+	case TOOLBLOCK:
+		tableName = "toolblock";
+		break;
+	case ITD:
+		tableName = "itd";
+		break;
+	}
+	if (res1.size() == 0) return;
+	com = "delete from " + tableName + " where id = " + res1[0][1];
+	for (int i = 1; i < res1.size(); i++) com += " or id = " + res1[i][1];
+	com += "; delete from file_object where file_id = " + res[0][0] + ";";
+	com += " delete from filetable where id = " + res[0][0];
+	DBOperations::ExecuteCommand(com.c_str(), NULL);
+}
+
 sqlite3 * DBOperations::GetConnection()
 {
 	int  rc;

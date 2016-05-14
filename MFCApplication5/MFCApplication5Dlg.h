@@ -9,21 +9,10 @@
 #include "stdafx.h"
 #include "MFCApplication5.h"
 #include "FolderDlg.h"
-#include <vector>
-#include <string.h>
-#include <map>
-#include <boost/filesystem.hpp>
-#include <iostream>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/foreach.hpp>
-#include "Fixture.h"
 #include "sqlite3.h"
-#define FIXTURE 2
-#define TOOLBLOCK 1
-#define ITD 0
+#include "CommonIncludes.h"
 using namespace boost::filesystem;
-
+using namespace std;
 
 // CMFCApplication5Dlg dialog
 class CMFCApplication5Dlg : public CDialogEx
@@ -47,9 +36,10 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	void LoadFilesBuildDB( const path & dir_path, HTREEITEM *root, bool *isFound,path* itdParent);
-	void LoadItemsFromXml(const std::string &filename, const std::string &itdParent, string children, string item, int type, 
+	void LoadItemsFromXml(const std::string &filename, const std::string &itdParent, std::string children, string item, int type, 
 		string(*getString)(boost::property_tree::ptree::value_type *v,string parent));
-	void LoadCorrectFile(const std::string & filename, std::string date, const std::string rootFile, int type);
+	void LoadCorrectFile(const std::string & filename, const std::string rootFile, int type);
+	void LoadITDFile(const std::string& filename);
 	void InsertFileInDB(const std::string &filename, std::string date, const std::string rootFile, int type);
 	void SearchDirectories(std::vector<path> *directories, bool *isFound, HTREEITEM *root, path* itdParent, bool *localIsFound);
 	void GetType(const path *p, bool * isFileOk, int *type, path *itdParent);
