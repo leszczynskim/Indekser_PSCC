@@ -5,10 +5,9 @@
 #include "MFCApplication5Dlg.h"
 #include "sqlite3.h"
 #include "DBOperations.h"
-
+#include <atlbase.h>
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#define FilePair(x, y) std::make_pair(std::string(x),bool(y))
 #endif
 
 using namespace std;
@@ -17,6 +16,8 @@ using namespace boost::filesystem;
 std::vector<CString> ItemsNames;
 std::map<CString, CString> Items;
 std::unordered_map<string, bool> filesInDb;
+std::vector<wstring> resultFiles;
+std::vector<path> pathsToSearch;
 CString last;
 int index = 0;
 LPCTSTR m_strFolderPath;
@@ -201,7 +202,10 @@ void CMFCApplication5Dlg::LoadFilesBuildDB(const path & dir_path, HTREEITEM *roo
 		bool b = false;
 		int type = 0;
 		string id;
-		if (is_directory(itr->status())) directories.push_back(itr->path());
+		if (is_directory(itr->status())) {
+			directories.push_back(itr->path());
+			continue;
+		}
 		if (itr->path().extension() == ".bmp")
 		{
 			localIsFound = true;
@@ -255,15 +259,16 @@ void CMFCApplication5Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PICTURE, m_PictureControl);
 	DDX_Control(pDX, IDC_RICHEDIT22, m_richEditSearch);
 	DDX_Control(pDX, IDC_BUTTON2, m_searchButton);
+	DDX_Control(pDX, IDC_LIST2, m_listResult);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplication5Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_LBN_SELCHANGE(IDC_LIST1, &CMFCApplication5Dlg::OnLbnSelchangeList1)
 	ON_BN_CLICKED(IDC_BUTTON1, &CMFCApplication5Dlg::OnBnClickedButton1)
 	ON_NOTIFY(TVN_SELCHANGED, 0x1221, &CMFCApplication5Dlg::OnTvnItemChangedTree1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMFCApplication5Dlg::OnBnClickedButton2)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST2, OnItemchangedList2)
 END_MESSAGE_MAP()
 
 BOOL CMFCApplication5Dlg::OnInitDialog()
@@ -278,7 +283,12 @@ BOOL CMFCApplication5Dlg::OnInitDialog()
 	m_tree.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP |
 		TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT |
 		TVS_SHOWSELALWAYS | TVS_TRACKSELECT,
-		CRect(690, 10, 1005, 500), this, 0x1221);
+		CRect(740, 10, 1095, 486), this, 0x1221);
+	SetBitmap(L"init.bmp");
+	m_listResult.SetExtendedStyle(LVS_EX_FULLROWSELECT |  LVS_EX_ONECLICKACTIVATE | LVS_EX_GRIDLINES);
+	m_listResult.InsertColumn(0, _T("ITD"), LVCFMT_LEFT, 180);
+	m_listResult.InsertColumn(1, _T("Make"), LVCFMT_LEFT, 170);
+	m_listResult.InsertColumn(2, _T("Name"), LVCFMT_LEFT, 170);
 
 	// TODO: Add extra initialization here
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -288,19 +298,14 @@ void CMFCApplication5Dlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // device context for painting
-
+		CPaintDC dc(this);
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
-
-		// Center icon in client rectangle
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
 		GetClientRect(&rect);
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
-
-		// Draw the icon
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -314,22 +319,22 @@ HCURSOR CMFCApplication5Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CMFCApplication5Dlg::OnLbnSelchangeList1()
-{
-	//int i = m_Values.GetCaretIndex();
-	int i = 0;
-	CString tmp = Items[ItemsNames[i]];
-	HBITMAP startBitmap = (HBITMAP)LoadImage(NULL, tmp, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-	m_PictureControl.SetBitmap(startBitmap);
-	index = 0;
-}
+//void CMFCApplication5Dlg::OnLbnSelchangeList1()
+//{
+//	//int i = m_Values.GetCaretIndex();
+//	int i = 0;
+//	CString tmp = Items[ItemsNames[i]];
+//	HBITMAP startBitmap = (HBITMAP)LoadImage(NULL, tmp, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+//	m_PictureControl.SetBitmap(startBitmap);
+//	index = 0;
+//}
 
 void CMFCApplication5Dlg::OnBnClickedButton1()
 {
 	DBOperations::Create("script.txt",&filesInDb);
-	CFolderDialog dlg(_T("Root folder is C:\ "), NULL, this);
-	dlg.SetRootFolder(_T("C:\input_do_ineksera"));
-	LPCTSTR m_strDisplayName;
+	CFolderDialog dlg(_T("Root folder is C:\\ "), NULL, this);
+	dlg.SetRootFolder(_T("C:\\input_do_ineksera"));
+	//LPCTSTR m_strDisplayName;
 	m_strFolderPath = L"C:\\input_do_ineksera";
 	bool b = false;
 	path p;
@@ -346,14 +351,11 @@ void CMFCApplication5Dlg::OnBnClickedButton1()
 void CMFCApplication5Dlg::OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	NMTVITEMCHANGE *pNMTVItemChange = reinterpret_cast<NMTVITEMCHANGE*>(pNMHDR);
-	// TODO: Add your control notification handler code here
 	wstring finalString;// = m_strFolderPath;
 	HTREEITEM a = m_tree.GetSelectedItem();
 	CString s = m_tree.GetItemText(a);
 	finalString += LPCTSTR("\\");
 	finalString += (LPCTSTR)s;
-
-	int i = 0;
 	while (a != NULL)
 	{
 		a = m_tree.GetParentItem(a);
@@ -361,63 +363,207 @@ void CMFCApplication5Dlg::OnTvnItemChangedTree1(NMHDR *pNMHDR, LRESULT *pResult)
 		auto tmp = finalString;
 		finalString = LPCTSTR("\\") + s;
 		finalString += tmp;
-		i++;
 	}
 	auto tmp = finalString;
 	finalString.clear();
-	finalString = CString(m_strFolderPath);// m_strFolderPath;
+	finalString = CString(m_strFolderPath);
 	finalString += tmp;
-	CBitmap m_bitmap;
-	HBITMAP startBitmap = (HBITMAP)LoadImage(NULL, finalString.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-	if (startBitmap != NULL)
-	{
-		//CBitmap bitmap;
-		//CRect *rect = new CRect(0, 0, 500, 300);
-
-		//m_PictureControl.GetClientRect(rect);
-
-		//bitmap.Attach(startBitmap);
-
-		//m_PictureControl.SetBitmap(bitmap);
-
-		//// Now it would be supposed to fit the control:
-		//CDC *pDC = m_PictureControl.GetDC();
-		//CDC m_DC;
-
-		//m_DC.CreateCompatibleDC(pDC);
-		//m_DC.SelectObject(&bitmap);
-
-		//pDC->StretchBlt(0, 0, rect->Width(), rect->Height(), &m_DC, 0, 0, 67, 37, SRCCOPY);
-
-		m_bitmap.Attach(startBitmap);
-		m_PictureControl.SetBitmap(m_bitmap);
-	}
+	SetBitmap(finalString.c_str());
 }
 
 
 void CMFCApplication5Dlg::OnBnClickedButton2()
 {
-	CString text;
-	m_richEditSearch.GetWindowTextW(text);
-	vector<CString> lines = SplitCString(text, L"\n");
-	for each (CString line in lines)
+	CString t;
+	m_richEditSearch.GetWindowTextW(t);
+	CT2CA tmp(t);
+	std::string text(tmp);
+	vector<string> keys,values;
+	GetParams(&text, &keys, &values);
+	if (keys.size() == 0 || (keys.size() != values.size())) return;
+	ostringstream fix,tool;
+	string txt = keys[0] + "=" + values[0];
+	for (int i = 1; i < keys.size(); i++)
+		txt += " and f." + keys[i] + "='" + values[i] + "'";
+	int x = 0;
+	fix << "select ft.filepath, f.make, f.name, f.file from Fixture f "
+		<< "join filetable ft on f.itd_id = ft.id where f." + txt;
+	tool << "select ft.filepath, f.make, f.name, f.file from Toolblock f "
+		<< "join filetable ft on f.itd_id = ft.id where f." + txt;
+	vector<vector<string>> result,result1;
+	bool b = DBOperations::ExecuteCommand(fix.str().c_str(), &result);
+	bool b1 = DBOperations::ExecuteCommand(tool.str().c_str(), &result1);
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	if (b) {
+		for (int i = 0; i < result.size(); i++) {
+			path p(result[i][0]);
+			pathsToSearch.push_back(p.parent_path());
+			wstring path = p.filename().wstring() + L":fixture";
+			int nIndex = m_listResult.InsertItem(0, path.c_str());
+			wstring w = converter.from_bytes(result[i][1]);
+			m_listResult.SetItemText(nIndex, 1, w.c_str());
+			w = converter.from_bytes(result[i][2]);
+			m_listResult.SetItemText(nIndex, 2, w.c_str());
+			w = converter.from_bytes(result[i][3] + ".bmp");
+			resultFiles.push_back(w);
+		}
+	}
+	if (b1) {
+		for (int i = 0; i < result1.size(); i++) {
+			path p(result1[i][0]);
+			pathsToSearch.push_back(p.parent_path());
+			wstring path = p.filename().wstring() + L":toolblock";
+			int nIndex = m_listResult.InsertItem(0, path.c_str());
+			wstring w = converter.from_bytes(result1[i][1]);
+			m_listResult.SetItemText(nIndex, 1, w.c_str());
+			w = converter.from_bytes(result1[i][2]);
+			m_listResult.SetItemText(nIndex, 2, w.c_str()); 
+			w = converter.from_bytes(result1[i][3] + ".bmp");
+			resultFiles.push_back(w);
+		}
+	}
+	if (!b && !b1)
+		MessageBox(_T("Nothing was found"), _T("Info"), MB_ICONINFORMATION | MB_OK);
+}
+
+void CMFCApplication5Dlg::SetBitmap(const wchar_t * filePath)
+{
+	CImage img1;
+	int dimx = 716, dimy = 476;
+	img1.Load(filePath);
+	if (img1 != NULL)
 	{
-		vector<CString> splittedLine = SplitCString(line, L"=");
-		vector<CString> arguments = SplitCString(splittedLine[1], L";");
+		CDC *screenDC = GetDC();
+		CDC mDC;
+		mDC.CreateCompatibleDC(screenDC);
+		CBitmap b;
+		b.CreateCompatibleBitmap(screenDC, dimx, dimy);
+		CBitmap *pob = mDC.SelectObject(&b);
+		mDC.SetStretchBltMode(HALFTONE);
+		img1.StretchBlt(mDC.m_hDC, 0, 0, dimx, dimy, 0, 0, img1.GetWidth(), img1.GetHeight(), SRCCOPY);
+		mDC.SelectObject(pob);
+		m_PictureControl.SetBitmap((HBITMAP)b.Detach());
+		ReleaseDC(screenDC);
 	}
 }
 
-vector<CString> CMFCApplication5Dlg::SplitCString(CString text, LPCWSTR separator)
+void CMFCApplication5Dlg::GetParams(std::string *text,std::vector<string>* keys, std::vector<string>* values)
 {
-	int index = 0;
-	vector<CString> result;
-	CString tmp;
-	tmp = text.Tokenize(separator, index);
-	while (tmp != "")
+	if (text->size() == 0) return;
+	m_listResult.DeleteAllItems();
+	vector<string> lines;
+	boost::replace_all(*text, ";", "\n");
+	boost::erase_all(*text, "\r");
+	boost::split(lines, *text, boost::is_any_of("\n"));
+	for each (string line in lines)
 	{
-		result.push_back(tmp);
-		tmp = text.Tokenize(separator, index);
+		vector<string> splittedLine, arguments,valueV;
+		boost::split(splittedLine, line, boost::is_any_of("="));
+		if (splittedLine.size() < 2)
+		{
+			MessageBox(_T("Incorrect sytax. Input key=value"), _T("Error"), MB_ICONERROR | MB_OK);
+			return;
+		}
+		boost::split(arguments, splittedLine[0], boost::is_any_of(" "));
+		string arg = "";
+		bool b = false;
+		for (int i = 0; i < arguments.size(); i++)
+		{
+			if (arguments[i].size() > 0) {
+				if (!b) arg += arguments[i];
+				else arg += "_" + arguments[i];
+				b = true;
+			}
+		}
+		if (arg.size() == 0 || splittedLine[1].size() == 0) continue;
+		keys->push_back(arg);
+		boost::replace_all(splittedLine[1], "false", "0");
+		boost::replace_all(splittedLine[1], "true", "1");
+		boost::split(valueV, splittedLine[1], boost::is_any_of(" "));
+		string value = "'";
+		b = false;
+		for (int i = 0; i < valueV.size(); i++)
+		{
+			if (valueV[i].size() > 0)
+			{
+				if (!b) value += valueV[i];
+				else value += " " + valueV[i];
+				b = true;
+			}
+		}
+		value += "'";
+		values->push_back(value);
+	}
+}
+
+HTREEITEM CMFCApplication5Dlg::FindItem(const CString& name, CTreeCtrl& tree, HTREEITEM hRoot)
+{
+	// check whether the current item is the searched one
+	CString text = tree.GetItemText(hRoot);
+	if (text.Compare(name) == 0)
+		return hRoot;
+
+	// get a handle to the first child item
+	HTREEITEM hSub = tree.GetChildItem(hRoot);
+	// iterate as long a new item is found
+	while (hSub)
+	{
+		// check the children of the current item
+		HTREEITEM hFound = FindItem(name, tree, hSub);
+		if (hFound)
+			return hFound;
+
+		// get the next sibling of the current item
+		hSub = tree.GetNextSiblingItem(hSub);
 	}
 
-	return result;
+	// return NULL if nothing was found
+	return NULL;
+}
+void CMFCApplication5Dlg::OnItemchangedList2(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+	POSITION pos = m_listResult.GetFirstSelectedItemPosition();
+	if ((pNMListView->uChanged & LVIF_STATE) && (pNMListView->uNewState & LVIS_SELECTED))
+	{
+		int x = GetSelectedItem(&m_listResult);
+		wstring file = resultFiles[resultFiles.size() - 1 - x];
+		path found;
+		if(find_file(pathsToSearch[pathsToSearch.size() - 1 - x], file, found))
+			SetBitmap(found.wstring().c_str());
+		else
+		{
+			int xa = 0;
+		}
+	}
+}
+int CMFCApplication5Dlg::GetSelectedItem(CListCtrl *plctrl)
+{
+	POSITION pos = plctrl->GetFirstSelectedItemPosition();
+	int selected = -1;
+	if (pos != NULL)
+	{
+		while (pos)
+		{
+			int nItem = plctrl->GetNextSelectedItem(pos);
+			selected = nItem;
+		}
+	}
+	return selected;
+}
+
+bool CMFCApplication5Dlg::find_file(const path& dir_path, const path& file_name, path& path_found) 
+{
+	const recursive_directory_iterator end;
+	const auto it = find_if(recursive_directory_iterator(dir_path), end, 
+		[&file_name](const directory_entry& e) {
+		return e.path().filename() == file_name;
+	});
+	if (it == end) {
+		return false;
+	}
+	else {
+		path_found = it->path();
+		return true;
+	}
 }

@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "DBOperations.h"
-#define FilePair(x, y) std::make_pair(std::string(x),bool(y))
-#pragma warning(disable : 4996)
 using namespace std;
 
 const char* DBOperations::DATABASE_NAME = "IndexerDB.db";
