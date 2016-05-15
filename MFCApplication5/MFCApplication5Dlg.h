@@ -49,6 +49,7 @@ protected:
 	HTREEITEM FindItem(const CString& name, CTreeCtrl& tree, HTREEITEM hRoot);
 	int GetSelectedItem(CListCtrl *plctrl);
 	bool find_file(const path& dir_path, const path& file_name, path& path_found);
+	void AddResults(wstring type, vector<vector<string>> *result);
 	DECLARE_MESSAGE_MAP()
 public:
 	CArray<double, double> Values;

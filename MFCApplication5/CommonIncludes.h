@@ -13,6 +13,7 @@
 #include <chrono>
 #include <locale>
 #include <codecvt>
+#include <boost/spirit/include/qi.hpp>
 
 #define FIXTURE 2
 #define TOOLBLOCK 1

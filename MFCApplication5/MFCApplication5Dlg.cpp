@@ -381,49 +381,49 @@ void CMFCApplication5Dlg::OnBnClickedButton2()
 	vector<string> keys,values;
 	GetParams(&text, &keys, &values);
 	if (keys.size() == 0 || (keys.size() != values.size())) return;
+	pathsToSearch.clear();
+	resultFiles.clear();
 	ostringstream fix,tool;
-	string txt = keys[0] + "=" + values[0];
+	string txt;
+	if (boost::algorithm::contains(values[0], "LIKE"))
+		txt = keys[0] + ")" + values[0];
+	else
+		txt = keys[0] + ")=LOWER(" + values[0] + ")";
 	for (int i = 1; i < keys.size(); i++)
-		txt += " and f." + keys[i] + "='" + values[i] + "'";
-	int x = 0;
+	{
+		if (boost::algorithm::contains(values[i], "LIKE"))
+			txt += " and LOWER(f." + keys[i] + values[i];
+		else
+			txt += " and LOWER(f." + keys[i] + ")=LOWER(" + values[i] + ")";
+	}
 	fix << "select ft.filepath, f.make, f.name, f.file from Fixture f "
-		<< "join filetable ft on f.itd_id = ft.id where f." + txt;
+		<< "join filetable ft on f.itd_id = ft.id where LOWER(f." + txt;
 	tool << "select ft.filepath, f.make, f.name, f.file from Toolblock f "
-		<< "join filetable ft on f.itd_id = ft.id where f." + txt;
+		<< "join filetable ft on f.itd_id = ft.id where LOWER(f." + txt;
 	vector<vector<string>> result,result1;
 	bool b = DBOperations::ExecuteCommand(fix.str().c_str(), &result);
 	bool b1 = DBOperations::ExecuteCommand(tool.str().c_str(), &result1);
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	if (b) {
-		for (int i = 0; i < result.size(); i++) {
-			path p(result[i][0]);
-			pathsToSearch.push_back(p.parent_path());
-			wstring path = p.filename().wstring() + L":fixture";
-			int nIndex = m_listResult.InsertItem(0, path.c_str());
-			wstring w = converter.from_bytes(result[i][1]);
-			m_listResult.SetItemText(nIndex, 1, w.c_str());
-			w = converter.from_bytes(result[i][2]);
-			m_listResult.SetItemText(nIndex, 2, w.c_str());
-			w = converter.from_bytes(result[i][3] + ".bmp");
-			resultFiles.push_back(w);
-		}
-	}
-	if (b1) {
-		for (int i = 0; i < result1.size(); i++) {
-			path p(result1[i][0]);
-			pathsToSearch.push_back(p.parent_path());
-			wstring path = p.filename().wstring() + L":toolblock";
-			int nIndex = m_listResult.InsertItem(0, path.c_str());
-			wstring w = converter.from_bytes(result1[i][1]);
-			m_listResult.SetItemText(nIndex, 1, w.c_str());
-			w = converter.from_bytes(result1[i][2]);
-			m_listResult.SetItemText(nIndex, 2, w.c_str()); 
-			w = converter.from_bytes(result1[i][3] + ".bmp");
-			resultFiles.push_back(w);
-		}
-	}
-	if (!b && !b1)
+	if (b) AddResults(L"fixture", &result);
+	if (b1)	AddResults(L"toolblock", &result1);
+	if (!b && !b1 || (result.size() == 0 && result1.size() == 0))
 		MessageBox(_T("Nothing was found"), _T("Info"), MB_ICONINFORMATION | MB_OK);
+}
+
+void CMFCApplication5Dlg::AddResults(wstring type, vector<vector<string>> *result)
+{
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	for (int i = 0; i < result->size(); i++) {
+		path p((*result)[i][0]);
+		pathsToSearch.push_back(p.parent_path());
+		wstring path = p.filename().wstring() + type;
+		int nIndex = m_listResult.InsertItem(0, path.c_str());
+		wstring w = converter.from_bytes((*result)[i][1]);
+		m_listResult.SetItemText(nIndex, 1, w.c_str());
+		w = converter.from_bytes((*result)[i][2]);
+		m_listResult.SetItemText(nIndex, 2, w.c_str());
+		w = converter.from_bytes((*result)[i][3] + ".bmp");
+		resultFiles.push_back(w);
+	}
 }
 
 void CMFCApplication5Dlg::SetBitmap(const wchar_t * filePath)
@@ -461,8 +461,9 @@ void CMFCApplication5Dlg::GetParams(std::string *text,std::vector<string>* keys,
 		boost::split(splittedLine, line, boost::is_any_of("="));
 		if (splittedLine.size() < 2)
 		{
-			MessageBox(_T("Incorrect sytax. Input key=value"), _T("Error"), MB_ICONERROR | MB_OK);
-			return;
+			continue;
+			/*MessageBox(_T("Incorrect sytax. Input key=value"), _T("Error"), MB_ICONERROR | MB_OK);
+			return;*/
 		}
 		boost::split(arguments, splittedLine[0], boost::is_any_of(" "));
 		string arg = "";
@@ -480,7 +481,16 @@ void CMFCApplication5Dlg::GetParams(std::string *text,std::vector<string>* keys,
 		boost::replace_all(splittedLine[1], "false", "0");
 		boost::replace_all(splittedLine[1], "true", "1");
 		boost::split(valueV, splittedLine[1], boost::is_any_of(" "));
-		string value = "'";
+		auto itBeg = valueV[0].begin();
+		auto itEnd = valueV[0].end();
+		float result;
+
+		if (boost::spirit::qi::parse(itBeg, itEnd, boost::spirit::qi::float_, result) || itBeg == itEnd)
+		{
+			values->push_back("'" + valueV[0] + "'");
+			continue;
+		}
+		string value = "LIKE LOWER('%";
 		b = false;
 		for (int i = 0; i < valueV.size(); i++)
 		{
@@ -491,7 +501,7 @@ void CMFCApplication5Dlg::GetParams(std::string *text,std::vector<string>* keys,
 				b = true;
 			}
 		}
-		value += "'";
+		value += "%')";
 		values->push_back(value);
 	}
 }
