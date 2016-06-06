@@ -1,0 +1,673 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://www.w3.org/2001/XMLSchema" />
+  <xs:element name="ToolUnits" type="ToolUnits" />
+  <xs:simpleType name="ToolUnits">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="English" />
+      <xs:enumeration value="Metric" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="CutterMaterial" type="CutterMaterial" />
+  <xs:simpleType name="CutterMaterial">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="HSS" />
+      <xs:enumeration value="HSS_TiN_Coated" />
+      <xs:enumeration value="Carbide_Insert" />
+      <xs:enumeration value="Carbide_Coated_Insert" />
+      <xs:enumeration value="Carbide_Solid" />
+      <xs:enumeration value="Diamond" />
+      <xs:enumeration value="Other" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="MillSpindleDir" type="MillSpindleDir" />
+  <xs:simpleType name="MillSpindleDir">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Forward" />
+      <xs:enumeration value="Reverse" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="LatheInsertFace" type="LatheInsertFace" />
+  <xs:simpleType name="LatheInsertFace">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FaceDown" />
+      <xs:enumeration value="FaceUp" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Tool" nillable="true" type="Tool" />
+  <xs:complexType name="Tool" abstract="true">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="comment" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="material" type="CutterMaterial" />
+      <xs:element minOccurs="1" maxOccurs="1" name="units" type="ToolUnits" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MillShankType" type="MillShankType" />
+  <xs:simpleType name="MillShankType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="eStraightShank" />
+      <xs:enumeration value="eSteppedShank" />
+      <xs:enumeration value="eTaperedShank" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="MillShank" nillable="true" type="MillShank" />
+  <xs:complexType name="MillShank" abstract="true">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="diameter" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StraightShank">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillShank" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AdvMillShank" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillShank">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="neck_diameter" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="neck_len" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SteppedShank">
+    <xs:complexContent mixed="false">
+      <xs:extension base="AdvMillShank" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="TaperedShank">
+    <xs:complexContent mixed="false">
+      <xs:extension base="AdvMillShank">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StraightShank" nillable="true" type="StraightShank" />
+  <xs:element name="AdvMillShank" nillable="true" type="AdvMillShank" />
+  <xs:element name="SteppedShank" nillable="true" type="SteppedShank" />
+  <xs:element name="TaperedShank" nillable="true" type="TaperedShank" />
+  <xs:element name="MillTool" nillable="true" type="MillTool" />
+  <xs:complexType name="MillTool" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Tool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="num_flutes" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="diameter" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="length" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="flute_length" nillable="true" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="direction" type="MillSpindleDir" />
+          <xs:element minOccurs="0" maxOccurs="1" name="shank" type="MillShank" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="EndMill" nillable="true" type="EndMill" />
+  <xs:complexType name="EndMill" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="bottom_corner_radius" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="options" type="EndMillToolOptions" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="EndMillToolOptions">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="top_corner_radius" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_center_diameter" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoughEndMill" nillable="true" type="RoughEndMill" />
+  <xs:complexType name="RoughEndMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="EndMill" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="FinishEndMill" nillable="true" type="FinishEndMill" />
+  <xs:complexType name="FinishEndMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="EndMill" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BallMill" nillable="true" type="BallMill" />
+  <xs:complexType name="BallMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="options" type="BallMillToolOptions" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="BallMillToolOptions">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="top_corner_radius" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SteppedMill" nillable="true" type="SteppedMill" />
+  <xs:complexType name="SteppedMill" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="bottom_corner_radius" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="options" type="SteppedMillToolOptions" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SteppedMillToolOptions">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="top_corner_radius" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_center_diameter" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ShellMill" nillable="true" type="ShellMill" />
+  <xs:complexType name="ShellMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="SteppedMill" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="FaceMill" nillable="true" type="FaceMill" />
+  <xs:complexType name="FaceMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="head_diam" nillable="true" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="head_length" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="lead_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="bottom_corner_radius" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="options" type="FaceMillToolOptions" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FaceMillToolOptions">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_center_diameter" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FlyCutter" nillable="true" type="FlyCutter" />
+  <xs:complexType name="FlyCutter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="SteppedMill" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="KeyCutter" nillable="true" type="KeyCutter" />
+  <xs:complexType name="KeyCutter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="bottom_corner_radius" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="top_corner_radius" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="options" type="KeyCutterToolOptions" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="KeyCutterToolOptions">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_center_diameter" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ThreadMill" nillable="true" type="ThreadMill" />
+  <xs:complexType name="ThreadMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_angle" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Drill" nillable="true" type="Drill" />
+  <xs:complexType name="Drill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_angle" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SpotDrill" nillable="true" type="SpotDrill" />
+  <xs:complexType name="SpotDrill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Drill" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CenterDrill" nillable="true" type="CenterDrill" />
+  <xs:complexType name="CenterDrill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Drill">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="shank_diameter" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="shoulder_angle" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BoringTool" nillable="true" type="BoringTool" />
+  <xs:complexType name="BoringTool">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BackBoringTool" nillable="true" type="BackBoringTool" />
+  <xs:complexType name="BackBoringTool">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BoringTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Tap" nillable="true" type="Tap" />
+  <xs:complexType name="Tap">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_length" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="pitch_mm" nillable="true" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tpi" nillable="true" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RigidTap" nillable="true" type="RigidTap" />
+  <xs:complexType name="RigidTap">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Tap" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SpotMill" nillable="true" type="SpotMill" />
+  <xs:complexType name="SpotMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="EndMill" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Reamer" nillable="true" type="Reamer" />
+  <xs:complexType name="Reamer">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_length" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="options" type="ReamerOptions" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ReamerOptions">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="top_corner_radius" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="bottom_corner_radius" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="non_cutting_center_diameter" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Countersink" nillable="true" type="Countersink" />
+  <xs:complexType name="Countersink">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="chamfer_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="flat_tip_diameter" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Roundover" nillable="true" type="Roundover" />
+  <xs:complexType name="Roundover">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="roundover_radius" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="pilot_diameter" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_to_roundover_length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Mill2DFormTool" nillable="true" type="Mill2DFormTool" />
+  <xs:complexType name="Mill2DFormTool">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Tool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="num_flutes" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="shape_file" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="nominal_rad" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Mill3DFormTool" nillable="true" type="Mill3DFormTool" />
+  <xs:complexType name="Mill3DFormTool">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Tool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="solid_ref" type="xs:long" />
+          <xs:element minOccurs="1" maxOccurs="1" name="nominal_rad" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="solid_file" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ConvexTipMill" nillable="true" type="ConvexTipMill" />
+  <xs:complexType name="ConvexTipMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="corner_rad" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="flat_diameter" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="covex_rad" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="options" type="ConvexTipOptions" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ConvexTipOptions">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="top_corner_radius" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DoveTailMill" nillable="true" type="DoveTailMill" />
+  <xs:complexType name="DoveTailMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="taper_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="corner_rad" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BarrelMill" nillable="true" type="BarrelMill" />
+  <xs:complexType name="BarrelMill">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="corner_radius" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="profile_radius" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Lollipop" nillable="true" type="Lollipop" />
+  <xs:complexType name="Lollipop">
+    <xs:complexContent mixed="false">
+      <xs:extension base="MillTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="LatheTool" nillable="true" type="LatheTool" />
+  <xs:complexType name="LatheTool" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Tool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="insert_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="face_dir" type="LatheInsertFace" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ISOTool" nillable="true" type="ISOTool" />
+  <xs:complexType name="ISOTool" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="LatheTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_radius" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thickness" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="inscribed_dia" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DiamondC" nillable="true" type="DiamondC" />
+  <xs:complexType name="DiamondC">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DiamondE" nillable="true" type="DiamondE" />
+  <xs:complexType name="DiamondE">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DiamondD" nillable="true" type="DiamondD" />
+  <xs:complexType name="DiamondD">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DiamondV" nillable="true" type="DiamondV" />
+  <xs:complexType name="DiamondV">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RoundR" nillable="true" type="RoundR" />
+  <xs:complexType name="RoundR">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="included_angle" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SquareS" nillable="true" type="SquareS" />
+  <xs:complexType name="SquareS">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TriangleT" nillable="true" type="TriangleT" />
+  <xs:complexType name="TriangleT">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TrigonW" nillable="true" type="TrigonW" />
+  <xs:complexType name="TrigonW">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PentagonP" nillable="true" type="PentagonP" />
+  <xs:complexType name="PentagonP">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ParallelogramK" nillable="true" type="ParallelogramK" />
+  <xs:complexType name="ParallelogramK">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RectangleL" nillable="true" type="RectangleL" />
+  <xs:complexType name="RectangleL">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ProfilerVN" nillable="true" type="ProfilerVN" />
+  <xs:complexType name="ProfilerVN">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ISOTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Grooving" nillable="true" type="Grooving" />
+  <xs:complexType name="Grooving">
+    <xs:complexContent mixed="false">
+      <xs:extension base="LatheTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_radius" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="size" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thickness" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_width" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_length" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_offset" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="face_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="side_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CutOff" nillable="true" type="CutOff" />
+  <xs:complexType name="CutOff">
+    <xs:complexContent mixed="false">
+      <xs:extension base="LatheTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_radius" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="size" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thickness" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="face_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="side_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_width" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ThreadN" nillable="true" type="ThreadN" />
+  <xs:complexType name="ThreadN">
+    <xs:complexContent mixed="false">
+      <xs:extension base="LatheTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="thread_style" type="ThreadNStyle" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thread_type" type="ThreadNType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_radius" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="size" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thickness" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tpi" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tip_offset" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="insert_width" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="flat_length" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="length" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ThreadNStyle">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UN" />
+      <xs:enumeration value="UNJ" />
+      <xs:enumeration value="Acme" />
+      <xs:enumeration value="Stub_Acme" />
+      <xs:enumeration value="API" />
+      <xs:enumeration value="AB_PF_Leading" />
+      <xs:enumeration value="AB_PF_Trailing" />
+      <xs:enumeration value="NTF" />
+      <xs:enumeration value="NJF" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ThreadNType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Cresting" />
+      <xs:enumeration value="Full" />
+      <xs:enumeration value="MultiForm" />
+      <xs:enumeration value="Partial" />
+      <xs:enumeration value="Positive" />
+      <xs:enumeration value="Utility" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ThreadL" nillable="true" type="ThreadL" />
+  <xs:complexType name="ThreadL">
+    <xs:complexContent mixed="false">
+      <xs:extension base="LatheTool">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="style" type="ThreadLStyle" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tpi" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="inscribed_dia" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thread_width" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="base_angle" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thickness" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="root_rad" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="crest_rad" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thread_edge_h" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="thread_edge_v" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ThreadLStyle">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UN" />
+      <xs:enumeration value="UNJ" />
+      <xs:enumeration value="ISO" />
+      <xs:enumeration value="NPT" />
+      <xs:enumeration value="Acme" />
+      <xs:enumeration value="Stub_Acme" />
+      <xs:enumeration value="Part60" />
+      <xs:enumeration value="Part55" />
+      <xs:enumeration value="Whit55" />
+      <xs:enumeration value="BSPT" />
+      <xs:enumeration value="Trapez" />
+      <xs:enumeration value="Round" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Lathe2DFormTool" nillable="true" type="Lathe2DFormTool" />
+  <xs:complexType name="Lathe2DFormTool">
+    <xs:complexContent mixed="false">
+      <xs:extension base="LatheTool">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="shape_file" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ToolSerializer" nillable="true">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="xs:schema" />
+        <xs:any />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ToolList" nillable="true">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="xs:schema" />
+        <xs:any />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GibbsToolImport" nillable="true" type="GibbsToolImport" />
+  <xs:complexType name="GibbsToolImport">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="tools">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xs:schema" />
+            <xs:any />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

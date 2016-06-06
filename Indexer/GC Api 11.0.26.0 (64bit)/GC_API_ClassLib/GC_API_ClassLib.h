@@ -1,0 +1,1 @@
+#error GC_API_ClassLib.h is dead
