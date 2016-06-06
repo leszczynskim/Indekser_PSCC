@@ -1,0 +1,30 @@
+﻿  Mesh.cpp
+  IndexerView.cpp
+  NOTE: Use of this header (bool_trait_def.hpp) is deprecated
+  NOTE: Use of this header (template_arity_spec.hpp) is deprecated
+  NOTE: Use of this header (template_arity_spec.hpp) is deprecated
+c:\program files (x86)\microsoft visual studio 14.0\vc\include\xutility(2229): warning C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\xutility(2216): note: see declaration of 'std::_Copy_impl'
+  c:\users\mikolaj\downloads\boost_1_60_0\boost\algorithm\string\detail\classification.hpp(102): note: see reference to function template instantiation '_OutIt std::copy<const char*,char*>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=char *,
+              _InIt=const char *
+          ]
+  c:\users\mikolaj\downloads\boost_1_60_0\boost\algorithm\string\classification.hpp(206): note: see reference to function template instantiation 'boost::algorithm::detail::is_any_ofF<char>::is_any_ofF<boost::iterator_range<const char *>>(const RangeT &)' being compiled
+          with
+          [
+              RangeT=boost::iterator_range<const char *>
+          ]
+  c:\users\mikolaj\downloads\boost_1_60_0\boost\algorithm\string\classification.hpp(206): note: see reference to function template instantiation 'boost::algorithm::detail::is_any_ofF<char>::is_any_ofF<boost::iterator_range<const char *>>(const RangeT &)' being compiled
+          with
+          [
+              RangeT=boost::iterator_range<const char *>
+          ]
+  c:\users\mikolaj\documents\github\indekser_pscc\indexer\indexerview.cpp(416): note: see reference to function template instantiation 'boost::algorithm::detail::is_any_ofF<char> boost::algorithm::is_any_of<char[2]>(const RangeT (&))' being compiled
+          with
+          [
+              RangeT=char [2]
+          ]
+  Generating Code...
+  Indexer.vcxproj -> C:\Users\Mikolaj\Documents\GitHub\Indekser_PSCC\x64\Debug\Indexer.exe

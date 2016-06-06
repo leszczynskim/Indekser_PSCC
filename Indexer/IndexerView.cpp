@@ -82,7 +82,6 @@ void CIndexerView::OnInitialUpdate()
 	m_listResult.InsertColumn(0, _T("ITD"), LVCFMT_LEFT, 180);
 	m_listResult.InsertColumn(1, _T("Make"), LVCFMT_LEFT, 170);
 	m_listResult.InsertColumn(2, _T("Name"), LVCFMT_LEFT, 170);
-	const RECT rect;
 }
 
 #ifdef _DEBUG

@@ -23,7 +23,7 @@ bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device)
 	m_device = device;
 	ifstream input;
 	input.exceptions(ios::badbit | ios::failbit | ios::eofbit);
-	int n, index;
+	int n;
 	if (!boost::filesystem::exists(fileName)) return false;
 	input.open(fileName);
 	input >> n;
@@ -43,7 +43,7 @@ bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device)
 	m_vertexBuffer = m_device.CreateVertexBuffer(positions);
 	m_stride = sizeof(VertexPosNormal);
 	m_indexBuffer = m_device.CreateIndexBuffer(indices);
-	m_indicesCount = indices.size();
+	m_indicesCount = (int)indices.size();
 	m_path = fileName;
 	return true;
 }
