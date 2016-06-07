@@ -99,13 +99,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;C:\Users\Mikolaj\Desktop\iiiii\INDEXERFINAL\Indexer\Indexer\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4348;4005;4091</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;C:\Users\Mikolaj\Downloads\GC Api 11.0.26.0 (64bit)\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
@@ -126,13 +126,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;C:\Users\Mikolaj\Desktop\iiiii\INDEXERFINAL\Indexer\Indexer\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4348;4005;4091</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;C:\Users\Mikolaj\Downloads\GC Api 11.0.26.0 (64bit)\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
@@ -155,7 +155,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;C:\Users\Mikolaj\Desktop\iiiii\INDEXERFINAL\Indexer\Indexer\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4348;4005;4091</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -186,7 +186,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;C:\Users\Mikolaj\Desktop\iiiii\INDEXERFINAL\Indexer\Indexer\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4348;4005;4091</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -194,7 +194,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;C:\Users\Mikolaj\Downloads\GC Api 11.0.26.0 (64bit)\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
@@ -256,7 +256,6 @@
     <ResourceCompile Include="Indexer.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="res\Indexer.rc2" />
   </ItemGroup>
   <ItemGroup>
@@ -294,18 +293,10 @@
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\sqlite3.3.8.8.3\build\native\sqlite3.targets" Condition="Exists('..\packages\sqlite3.3.8.8.3\build\native\sqlite3.targets')" />
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties RESOURCE_FILE="Indexer.rc" />
     </VisualStudio>
   </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\sqlite3.3.8.8.3\build\native\sqlite3.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sqlite3.3.8.8.3\build\native\sqlite3.targets'))" />
-  </Target>
 </Project>
