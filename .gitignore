@@ -1,8 +1,5 @@
 *.tlog
-*.vcxproj
 *.suo
 *.sdf
 *.sdf
-*.vcxproj
-MFCApplication5/MFCApplication5.vcxproj.filters
 *.obj
