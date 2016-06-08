@@ -577,11 +577,6 @@ int CIndexerView::Convert_fb2_to_stl(const std::string & path_fb2)
 		out << endl;
 	}
 	out << fb2.nindices << std::endl;
-	for (int i = 0; i < fb2.nindices; i++)
-	{
-		out << fb2.indices[i] << " ";
-		out << endl;
-	}
 	out.close();
 	return 0;
 }

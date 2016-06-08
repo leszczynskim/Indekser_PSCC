@@ -45,7 +45,6 @@ void DX11Wnd::SetModel(std::wstring const &path)
 	std::wstring s = path;
 	if (s.empty()) return;
 	s += L"1.fb2.stl";
-	//m_model = Mesh(m_device);
 	if (!m_model.LoadMesh(s, m_device)) return;
 	m_model.setWorldMatrix(XMMatrixIdentity());
 	m_camera = Camera();
@@ -162,7 +161,7 @@ void DX11Wnd::OnMouseMove(UINT nFlags, CPoint point)
 		m_model.setWorldMatrix(XMMatrixRotationX(AngleX)*XMMatrixRotationY(AngleY));
 	}
 	else if (rightClick)
-		m_camera.Move(XMFLOAT3(-dx / 3.0f, -dy / 3.0f, 0));
+		m_camera.Move(XMFLOAT3(dx / 3.0f, -dy / 3.0f, 0));
 	else if (middleClick)
 		m_camera.Move(XMFLOAT3(0.0f, 0.0f, dy / 1.0f));
 }

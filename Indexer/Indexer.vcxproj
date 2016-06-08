@@ -164,7 +164,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;C:\Users\Mikolaj\Downloads\GC Api 11.0.26.0 (64bit)\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
     <Midl>

@@ -13,8 +13,6 @@
 class Mesh
 {
 public:
-	Mesh(std::shared_ptr<ID3D11Buffer> vb, unsigned int stride,
-		std::shared_ptr<ID3D11Buffer> ib, unsigned int indicesCountconst);
 	Mesh(const DeviceHelper & device);
 	Mesh() {}
 	bool LoadMesh(std::wstring const & fileName, const DeviceHelper & device);
@@ -23,13 +21,14 @@ public:
 	void setWorldMatrix(const DirectX::XMMATRIX& mtx) { m_worldMtx = mtx; }
 	void Render(const std::shared_ptr<ID3D11DeviceContext>& context) const;
 private:
-	std::shared_ptr<ID3D11Buffer> m_vertexBuffer;
-	std::shared_ptr<ID3D11Buffer> m_indexBuffer;
+	std::shared_ptr<ID3D11Buffer>* m_vertexBuffer;
+	std::shared_ptr<ID3D11Buffer>* m_indexBuffer;
 	unsigned int m_stride;
-	unsigned int m_indicesCount;
+	unsigned int* m_indicesCount;
 	DirectX::XMMATRIX m_worldMtx;
 	DeviceHelper m_device;
 	std::wstring m_path;
+	int modelsCount;
 };
 
 
