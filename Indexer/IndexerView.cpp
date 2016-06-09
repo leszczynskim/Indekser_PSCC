@@ -82,6 +82,7 @@ void CIndexerView::OnInitialUpdate()
 	m_listResult.InsertColumn(0, _T("ITD"), LVCFMT_LEFT, 180);
 	m_listResult.InsertColumn(1, _T("Make"), LVCFMT_LEFT, 170);
 	m_listResult.InsertColumn(2, _T("Name"), LVCFMT_LEFT, 170);
+	m_checkBoxScaling.SetCheck(1);
 }
 
 #ifdef _DEBUG
@@ -651,7 +652,7 @@ void CIndexerView::OnMButtonDown(UINT nFlags, CPoint pt)
 
 void CIndexerView::OnBnClickedCheck1()
 {
-	OnTvnSelchangedTree1(nullptr, nullptr);
+	SetBitmap(m_lastPath.c_str());
 }
 
 void CIndexerView::OnBnClickedButton1()

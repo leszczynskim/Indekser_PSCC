@@ -48,6 +48,8 @@ void DX11Wnd::SetModel(std::wstring const &path)
 	if (!m_model.LoadMesh(s, m_device)) return;
 	m_model.setWorldMatrix(XMMatrixIdentity());
 	m_camera = Camera();
+	AngleX = 0;
+	AngleY = 0;
 }
 
 void DX11Wnd::InitializeConstantBuffers()
@@ -124,7 +126,6 @@ void DX11Wnd::DrawScene()
 	m_model.Render(m_context);
 	m_phongEffect->End();
 }
-
 
 BOOL DX11Wnd::OnEraseBkgnd(CDC* pDC)
 {
