@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "DX11Graphics.h"
 using namespace std;
 

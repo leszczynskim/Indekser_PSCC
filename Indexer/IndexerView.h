@@ -7,12 +7,14 @@
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#pragma warning(push)
+// warning C4348: 'boost::spirit::terminal<...>::result_helper': redefinition of default parameter: parameter 3, 4
+#pragma warning(disable: 4348)
 #include <boost/spirit/include/qi.hpp>
 #include <boost/foreach.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "afxcmn.h"
 #include "afxwin.h"
-#include "api.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -20,6 +22,7 @@
 #include "afxwinappex.h"
 #include "afxdialogex.h"
 #include <sys/stat.h>
+#pragma warning(pop)
 
 using namespace std;
 using namespace boost::filesystem;
@@ -59,7 +62,6 @@ public:
 	afx_msg void OnBnClickedRadio3d();
 	string ToUtf8Str(const std::wstring & wstr);
 	wstring toUtf8Wstr(const std::string & str);
-	int Convert_fb2_to_stl(std::string const & path_fb2);
 	bool FileExists(const std::string & filename);
 	void ReadSTL(std::string const & path_fb2, std::string const & path_stl, std::string const & solidName);
 	void OnLButtonDown(UINT nFlags, CPoint point);
@@ -103,5 +105,6 @@ private:
 public:
 	CButton m_checkBoxScaling;
 	afx_msg void OnBnClickedCheck1();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 

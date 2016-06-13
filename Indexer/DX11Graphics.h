@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include <d3dx11.h>
-#include <D3D11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include "framework/DirectUtils.h"

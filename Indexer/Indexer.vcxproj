@@ -187,7 +187,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4348;4005;4091</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4091</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

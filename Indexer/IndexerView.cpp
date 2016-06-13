@@ -153,8 +153,6 @@ void CIndexerView::LoadFilesBuildDB(const path & dir_path, HTREEITEM *root, bool
 			if (!root) m_tree1.InsertItem(s.c_str(), TVI_ROOT);
 			else m_tree1.InsertItem(s.c_str(), *root);
 		}
-		else if (itr->path().extension() == ".fb2")
-			Convert_fb2_to_stl(itr->path().string());
 		GetType(&(itr->path()), &b, &type, itdParent);
 		if (!b) continue;
 		auto x = itr->path().string();
@@ -553,35 +551,6 @@ wstring CIndexerView::toUtf8Wstr(const std::string &str)
 	return wstrTo;
 }
 
-int CIndexerView::Convert_fb2_to_stl(const std::string & path_fb2)
-{
-	string outFile = path_fb2;
-	outFile += ".stl";
-	gc_tFacetRep fb2;
-	if (fb2.Read(path_fb2.c_str()))
-		return -1;
-	if (FileExists(outFile)) return -1;
-	std::ofstream out(outFile);
-	if (!out.is_open() || !out.good()) return -1;
-	if (fb2.nfacets * 3 != fb2.nverts)
-	{
-		std::cout << L"This is a problem: fb2.nfacets * 3 != fb2.nverts" << std::endl;
-		return -1;
-	}
-	out << fb2.nverts << std::endl;
-	for (int i = 0; i < fb2.nverts; i++)
-	{
-		for (int j = 0; j < 3; j++)
-			out << fb2.verts[3 * i + j] << " ";
-		for (int j = 0; j < 3; j++)
-			out << fb2.norms[3 * i + j] << " ";
-		out << endl;
-	}
-	out << fb2.nindices << std::endl;
-	out.close();
-	return 0;
-}
-
 bool CIndexerView::FileExists(const std::string& filename)
 {
 	struct stat buf;
@@ -759,4 +728,27 @@ void CIndexerView::OnBnClickedButtonexpand()
 void CIndexerView::OnBnClickedButtoncollapse()
 {
 	ToggleTreeNode(m_tree1.GetRootItem(), TVE_COLLAPSE);
+}
+
+BOOL CIndexerView::PreTranslateMessage(MSG* pMsg)
+{
+	if ((pMsg->message == WM_KEYDOWN))
+	{
+		CWnd* pControl;
+		switch (pMsg->wParam)
+		{
+		case VK_RETURN:
+			pControl = this->GetFocus();
+			if (pControl->IsKindOf(RUNTIME_CLASS(CRichEditCtrl)))
+				OnBnClickedButton1();
+			return TRUE;
+		case VK_TAB:
+			pControl = this->GetFocus();
+			if (pControl->IsKindOf(RUNTIME_CLASS(CRichEditCtrl)))
+				m_radioButtons = (m_radioButtons + 1) % 2;
+			UpdateData(FALSE);
+			return TRUE;
+		}
+	}
+	return CFormView::PreTranslateMessage(pMsg);
 }

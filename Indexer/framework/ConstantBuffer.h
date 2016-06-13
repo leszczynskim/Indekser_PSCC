@@ -1,10 +1,10 @@
 #ifndef __CONSTANT_BUFFER_H_
 #define __CONSTANT_BUFFER_H_
 
-#include <d3d11.h>
 #include <memory>
 #include <DirectXMath.h>
 #include "DeviceHelper.h"
+#include <d3d11.h>
 
 class ConstantBufferBase
 {

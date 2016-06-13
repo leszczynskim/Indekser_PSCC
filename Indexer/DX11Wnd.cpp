@@ -44,7 +44,7 @@ void DX11Wnd::SetModel(std::wstring const &path)
 {
 	std::wstring s = path;
 	if (s.empty()) return;
-	s += L"1.fb2.stl";
+	s += L"1.fb2";
 	if (!m_model.LoadMesh(s, m_device)) return;
 	m_model.setWorldMatrix(XMMatrixIdentity());
 	m_camera = Camera();

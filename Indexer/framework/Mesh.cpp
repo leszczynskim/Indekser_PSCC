@@ -17,27 +17,40 @@ Mesh::Mesh(const DeviceHelper& device)
 
 }
 
+std::string toUtf8Str(const std::wstring & wstr)
+{
+	if (wstr.empty()) return std::string();
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	std::string strTo(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	return strTo;
+}
+
 bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device)
 {
 	if (fileName == m_path) return false;
 	m_device = device;
-	ifstream input;
-	input.exceptions(ios::badbit | ios::failbit | ios::eofbit);
-	int n;
 	if (!boost::filesystem::exists(fileName)) return false;
-	input.open(fileName);
-	input >> n;
-
-	modelsCount = n / pow(2, 16) + 1;
+	gc_tFacetRep fb2;
+	string aa = toUtf8Str(fileName);
+	if (fb2.Read(toUtf8Str(fileName).c_str()))	return false;
+	if (fb2.nfacets * 3 != fb2.nverts)	return false;
+	int n = fb2.nverts;
+	modelsCount = (int)(n / pow(2, 16) + 1);
 	m_vertexBuffer = new std::shared_ptr<ID3D11Buffer>[modelsCount];
 	m_indexBuffer = new std::shared_ptr<ID3D11Buffer>[modelsCount];
 	m_indicesCount = new unsigned int[modelsCount];
 	vector<VertexPosNormal> allPositions(n);
-	for (auto i = 0; i < n; ++i)
+	for (int i = 0; i < fb2.nverts; i++)
 	{
-		input >> allPositions[i].Pos.x >> allPositions[i].Pos.y >> allPositions[i].Pos.z;
-		input >> allPositions[i].Normal.x >> allPositions[i].Normal.y >> allPositions[i].Normal.z;
+		allPositions[i].Pos.x = fb2.verts[3 * i];
+		allPositions[i].Pos.y = fb2.verts[3 * i + 1];
+		allPositions[i].Pos.z = fb2.verts[3 * i + 2];
+		allPositions[i].Normal.x = fb2.norms[3 * i];
+		allPositions[i].Normal.y = fb2.norms[3 * i + 1];
+		allPositions[i].Normal.z = fb2.norms[3 * i + 2];		
 	}
+	n = fb2.nindices;
 	int start = 0;
 	for (int j = 0; j < modelsCount; j++)
 	{
@@ -56,7 +69,6 @@ bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device)
 		m_indexBuffer[j] = m_device.CreateIndexBuffer(indices);
 		m_indicesCount[j] = (int)indices.size();
 	}
-	input.close();
 	m_path = fileName;
 	return true;
 }
@@ -75,7 +87,6 @@ void Mesh::Render(const shared_ptr<ID3D11DeviceContext>& context) const
 		context->DrawIndexed(m_indicesCount[i], 0, 0);
 	}
 }
-
 
 const D3D11_INPUT_ELEMENT_DESC VertexPosNormal::Layout[] =
 {

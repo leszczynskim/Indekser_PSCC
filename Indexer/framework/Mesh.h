@@ -1,7 +1,6 @@
 #ifndef __MESH_H_
 #define __MESH_H_
 
-#include <d3d11.h>
 #include <memory>
 #include <DirectXMath.h>
 #include <string>
@@ -9,16 +8,18 @@
 #include <fstream>
 #include "Devicehelper.h"
 #include <boost/filesystem.hpp>
+#include <d3d11.h>
+#include "api.h"
 
 class Mesh
 {
 public:
 	Mesh(const DeviceHelper & device);
 	Mesh() {}
-	bool LoadMesh(std::wstring const & fileName, const DeviceHelper & device);
 
 	const DirectX::XMMATRIX& getWorldMatrix() const { return m_worldMtx; }
 	void setWorldMatrix(const DirectX::XMMATRIX& mtx) { m_worldMtx = mtx; }
+	bool LoadMesh(std::wstring const & fileName, const DeviceHelper & device);
 	void Render(const std::shared_ptr<ID3D11DeviceContext>& context) const;
 private:
 	std::shared_ptr<ID3D11Buffer>* m_vertexBuffer;

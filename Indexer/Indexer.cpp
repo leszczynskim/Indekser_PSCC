@@ -120,6 +120,8 @@ protected:
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -132,6 +134,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 // App command to run the dialog
@@ -151,3 +154,11 @@ BOOL CIndexerApp::OnIdle(LONG lCount)
 }
 
 
+
+
+void CAboutDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
+}
