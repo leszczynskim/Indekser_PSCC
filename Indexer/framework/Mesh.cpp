@@ -41,7 +41,7 @@ bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device, fl
 	m_indexBuffer = new std::shared_ptr<ID3D11Buffer>[modelsCount];
 	m_indicesCount = new unsigned int[modelsCount];
 	vector<VertexPosNormal> allPositions(n);
-	float minX = INT_MAX, maxX = INT_MIN, minY = INT_MAX, maxY = INT_MIN;
+	float minX = (float)INT_MAX, maxX = (float)INT_MIN, minY = (float)INT_MAX, maxY = (float)INT_MIN;
 	for (int i = 0; i < fb2.nverts; i++)
 	{
 		float x = fb2.verts[3 * i];

@@ -82,6 +82,8 @@ private:
 	void LoadFilesBuildDB(const wpath & dir_path, HTREEITEM *root, bool *isFound, wpath* itdParent);
 	void LoadItemsFromXml(const std::string &filename, const std::string &itdParent, std::string children, string item, int type,
 		string(*getString)(boost::property_tree::ptree::value_type *v, string parent));
+	void CheckFilesInDB();
+	HTREEITEM FindItem(HTREEITEM hRoot, vector<wstring>* itemsInDb);
 	void LoadCorrectFile(const std::string & filename, const std::string rootFile, int type);
 	void LoadITDFile(const std::string& filename);
 	void InsertFileInDB(const std::string &filename, std::string date, const std::string rootFile, int type);

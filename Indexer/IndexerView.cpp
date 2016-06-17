@@ -159,13 +159,14 @@ void CIndexerView::LoadFilesBuildDB(const path & dir_path, HTREEITEM *root, bool
 		filesInDb[x] = true;
 		bool isModified, doesExist;
 		string date = DBOperations::GetDateOfModification(itr->path(), &isModified, &doesExist, &id);
-		if (!doesExist)	InsertFileInDB(x, date, itdParent->string(), type);
+		if (!doesExist) InsertFileInDB(x, date, itdParent->string(), type);
 		else if (isModified) UpdateFileInDB(type, id, x, date, itdParent->string());
 	}
 	SearchDirectories(&directories, isFound, root, itdParent, &localIsFound);
 }
 
-void CIndexerView::LoadItemsFromXml(const std::string & filename, const std::string & itdParent, std::string children, string item, int type, string(*getString)(boost::property_tree::ptree::value_type *v, string parent))
+void CIndexerView::LoadItemsFromXml(const std::string & filename, const std::string & itdParent, std::string children, string item, 
+	int type, string(*getString)(boost::property_tree::ptree::value_type *v, string parent))
 {
 	using boost::property_tree::ptree;
 	ptree pt;
@@ -184,6 +185,47 @@ void CIndexerView::LoadItemsFromXml(const std::string & filename, const std::str
 		ss << "Insert into file_object (file_id,item_id,typ_id) values(" << file_id << "," << id << "," << type << ");";
 		DBOperations::ExecuteCommand(ss.str().c_str(), NULL);
 	}
+}
+
+void CIndexerView::CheckFilesInDB()
+{
+	std::vector<std::vector<string>> res;
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	string com = "select file from fixture";
+	DBOperations::ExecuteCommand(com.c_str(), &res);
+	vector<wstring> itemsInDb;
+	for (int i = 0; i < (int)res.size(); i++)
+	{
+		wstring w = converter.from_bytes(res[i][0]);
+		itemsInDb.push_back(w);
+	}
+	com = "select file from toolblock";
+	DBOperations::ExecuteCommand(com.c_str(), &res);
+	for (int i = 0; i < (int)res.size(); i++)
+	{
+		wstring w = converter.from_bytes(res[i][0]); 
+		itemsInDb.push_back(w);
+	}
+	FindItem(m_tree1.GetRootItem(), &itemsInDb);
+}
+
+HTREEITEM CIndexerView::FindItem(HTREEITEM hRoot, vector<wstring> *itemsInDb)
+{
+	CString text = m_tree1.GetItemText(hRoot);
+	auto isFound = find(itemsInDb->begin(), itemsInDb->end(), wstring(text));
+	if(isFound == itemsInDb->end() && !m_tree1.ItemHasChildren(hRoot))
+	{
+		m_tree1.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
+	}
+
+	HTREEITEM hSub = m_tree1.GetChildItem(hRoot);
+	while (hSub)
+	{
+		HTREEITEM hFound = FindItem(hSub, itemsInDb);
+		if (hFound) return hFound;
+		hSub = m_tree1.GetNextSiblingItem(hSub);
+	}
+	return NULL;
 }
 
 string GetFixture(boost::property_tree::ptree::value_type *v, string itdParentId)
@@ -683,6 +725,11 @@ void CIndexerView::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 			if (m_radioButtonsView == 0) DirectWnd->SetModel(s.c_str());
 			else SetBitmap(s.c_str());
 		}
+		else
+		{
+			wstring tmp = wstring(L"File: " + file + L" not found.");
+			MessageBoxA(this->GetSafeHwnd(), LPCSTR("Selected file does not exist."), "Error", 0);
+		}
 	}
 }
 
@@ -718,6 +765,8 @@ void CIndexerView::OnBnClickedButtonfolder()
 	LoadFilesBuildDB(m_strFolderPath, NULL, &b, &p);
 	for (auto &x : filesInDb)
 		if (!x.second) DBOperations::RemoveFileFromDB(x.first);
+
+	CheckFilesInDB();
 }
 
 void CIndexerView::OnBnClickedButtonexpand()
@@ -741,12 +790,6 @@ BOOL CIndexerView::PreTranslateMessage(MSG* pMsg)
 			pControl = this->GetFocus();
 			if (pControl->IsKindOf(RUNTIME_CLASS(CRichEditCtrl)))
 				OnBnClickedButton1();
-			return TRUE;
-		case VK_TAB:
-			pControl = this->GetFocus();
-			if (pControl->IsKindOf(RUNTIME_CLASS(CRichEditCtrl)))
-				m_radioButtons = (m_radioButtons + 1) % 2;
-			UpdateData(FALSE);
 			return TRUE;
 		}
 	}
