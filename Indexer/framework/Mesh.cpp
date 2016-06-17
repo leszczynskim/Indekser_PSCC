@@ -4,7 +4,7 @@
 
 using namespace std;
 using namespace DirectX;
-
+const double Mesh::pow216 = pow(2, 16);
 Mesh::Mesh(const DeviceHelper& device)
 	: m_stride(0), m_indicesCount(0), m_device(device)
 {
@@ -26,7 +26,7 @@ std::string toUtf8Str(const std::wstring & wstr)
 	return strTo;
 }
 
-bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device)
+bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device, float *sizeX, float *sizeY,float *centerX, float *centerY)
 {
 	if (fileName == m_path) return false;
 	m_device = device;
@@ -36,19 +36,26 @@ bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device)
 	if (fb2.Read(toUtf8Str(fileName).c_str()))	return false;
 	if (fb2.nfacets * 3 != fb2.nverts)	return false;
 	int n = fb2.nverts;
-	modelsCount = (int)(n / pow(2, 16) + 1);
+	modelsCount = (int)(n / pow216 + 1);
 	m_vertexBuffer = new std::shared_ptr<ID3D11Buffer>[modelsCount];
 	m_indexBuffer = new std::shared_ptr<ID3D11Buffer>[modelsCount];
 	m_indicesCount = new unsigned int[modelsCount];
 	vector<VertexPosNormal> allPositions(n);
+	float minX = INT_MAX, maxX = INT_MIN, minY = INT_MAX, maxY = INT_MIN;
 	for (int i = 0; i < fb2.nverts; i++)
 	{
-		allPositions[i].Pos.x = fb2.verts[3 * i];
-		allPositions[i].Pos.y = fb2.verts[3 * i + 1];
+		float x = fb2.verts[3 * i];
+		float y = fb2.verts[3 * i + 1];
+		allPositions[i].Pos.x = x;
+		allPositions[i].Pos.y = y;
 		allPositions[i].Pos.z = fb2.verts[3 * i + 2];
 		allPositions[i].Normal.x = fb2.norms[3 * i];
 		allPositions[i].Normal.y = fb2.norms[3 * i + 1];
-		allPositions[i].Normal.z = fb2.norms[3 * i + 2];		
+		allPositions[i].Normal.z = fb2.norms[3 * i + 2];	
+		if (x < minX) minX = x;
+		if (x > maxX) maxX = x;
+		if (y < minY) minY = y;
+		if (y > maxY) maxY = y;
 	}
 	n = fb2.nindices;
 	int start = 0;
@@ -70,6 +77,10 @@ bool Mesh::LoadMesh(std::wstring const &fileName, const DeviceHelper& device)
 		m_indicesCount[j] = (int)indices.size();
 	}
 	m_path = fileName;
+	*sizeX = maxX - minX;
+	*sizeY = maxY - minY;
+	*centerX = (maxX + minX) / 2.0f;
+	*centerY = (maxY + minY) / 2.0f;
 	return true;
 }
 

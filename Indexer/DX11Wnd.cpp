@@ -3,7 +3,6 @@
 #include "DX11Wnd.h"
 
 IMPLEMENT_DYNAMIC(DX11Wnd, CWnd)
-
 DX11Wnd::DX11Wnd() : m_camera()
 {
 	leftClick = false;
@@ -45,9 +44,18 @@ void DX11Wnd::SetModel(std::wstring const &path)
 	std::wstring s = path;
 	if (s.empty()) return;
 	s += L"1.fb2";
-	if (!m_model.LoadMesh(s, m_device)) return;
+	float sizeX, sizeY, centerX, centerY;
+	if (!m_model.LoadMesh(s, m_device, &sizeX, &sizeY, &centerX, &centerY)) return;
+	CRect rect;
+	GetWindowRect(&rect);
+	auto ar = static_cast<float>(rect.Width()) / rect.Height();
+	float Hfov = 2 * atanf(tanf(XM_PIDIV4)*ar);
+	float d1 = (sizeY / 2.0f) / tan(XM_PIDIV4);
+	float d2 = (sizeX / 2.0f) / tan(Hfov / 2.0f);
+	auto maxx = max(d1, d2);
 	m_model.setWorldMatrix(XMMatrixIdentity());
 	m_camera = Camera();
+	m_camera.Move(XMFLOAT3(centerX, centerY, -maxx));
 	AngleX = 0;
 	AngleY = 0;
 }
@@ -89,9 +97,7 @@ void DX11Wnd::UpdateCamera()
 }
 
 bool DX11Wnd::Render() {
-	if (m_context == nullptr)
-		return false;
-
+	if (m_context == nullptr) return false;
 	m_projCB->Update(m_context, m_projMtx);
 	UpdateCamera();
 	float bgColor[4] = { 0,0,0,1.0f };
