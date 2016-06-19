@@ -79,7 +79,7 @@ private:
 	std::unordered_map<string, bool> filesInDb;
 	std::vector<wstring> resultFiles;
 	std::vector<path> pathsToSearch;
-	void LoadFilesBuildDB(const wpath & dir_path, HTREEITEM *root, bool *isFound, wpath* itdParent);
+	void LoadFilesBuildDB(const wpath & dir_path, bool *isFound, wpath* itdParent, CIndexerView* pDlg);
 	void LoadItemsFromXml(const std::string &filename, const std::string &itdParent, std::string children, string item, int type,
 		string(*getString)(boost::property_tree::ptree::value_type *v, string parent));
 	void CheckFilesInDB();
@@ -87,7 +87,7 @@ private:
 	void LoadCorrectFile(const std::string & filename, const std::string rootFile, int type);
 	void LoadITDFile(const std::string& filename);
 	void InsertFileInDB(const std::string &filename, std::string date, const std::string rootFile, int type);
-	void SearchDirectories(std::vector<path> *directories, bool *isFound, HTREEITEM *root, path* itdParent, bool *localIsFound);
+	void SearchDirectories(std::vector<path>* directories, bool * isFound, path * itdParent, bool * localIsFound, CIndexerView * pDlg);
 	void GetType(const path *p, bool * isFileOk, int *type, path *itdParent);
 	void UpdateFileInDB(int type, string id, const std::string & filename, std::string date, const std::string rootFile);
 	void SetBitmap(const wchar_t* filePath);
@@ -104,9 +104,13 @@ private:
 	void OnRender();
 	vector<string> keysFixture;
 	vector<string> keysToolblock;
+	afx_msg LRESULT OnTreeUpdate(WPARAM, LPARAM);
+	UINT NonStaticThreadDB(LPVOID param);
+	static UINT ThreadDB(LPVOID param);
 public:
 	CButton m_checkBoxScaling;
 	afx_msg void OnBnClickedCheck1();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	CProgressCtrl m_progressBar;
 };
 
