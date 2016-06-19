@@ -39,6 +39,7 @@ BEGIN_MESSAGE_MAP(CIndexerView, CFormView)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE1, &CIndexerView::OnTvnSelchangedTree1)
 	ON_BN_CLICKED(IDC_CHECK1, &CIndexerView::OnBnClickedCheck1)
 	ON_REGISTERED_MESSAGE(WM_ADD_TREE, &CIndexerView::OnTreeUpdate)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 CIndexerView::CIndexerView()
@@ -847,4 +848,9 @@ UINT CIndexerView::ThreadDB(LPVOID param)
 {
 	CIndexerView* self = (CIndexerView*)param;
 	return self->NonStaticThreadDB((LPVOID)self);
+}
+
+void CIndexerView::OnSize(UINT nType, int cx, int cy)
+{
+	CFormView::OnSize(nType, cx, cy);
 }
