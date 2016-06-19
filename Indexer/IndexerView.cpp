@@ -11,7 +11,6 @@
 #endif
 using namespace std;
 
-bool isFirstDir = false;
 HTREEITEM currRoot;
 vector<HTREEITEM> tmpRoots;
 
@@ -136,7 +135,7 @@ void CIndexerView::ToggleTreeNode(HTREEITEM hItem, UINT nCode)
 	}
 }
 
-void CIndexerView::LoadFilesBuildDB(const path & dir_path, bool *isFound, path* itdParent, CIndexerView* pDlg)
+void CIndexerView::LoadFilesBuildDB(const path & dir_path, bool *isFound, path* itdParent, CIndexerView* pDlg, bool isFirstLoop)
 {
 	if (!exists(dir_path)) return;
 	directory_iterator end_itr;
@@ -168,7 +167,7 @@ void CIndexerView::LoadFilesBuildDB(const path & dir_path, bool *isFound, path* 
 		if (!doesExist) InsertFileInDB(x, date, itdParent->string(), type);
 		else if (isModified) UpdateFileInDB(type, id, x, date, itdParent->string());
 	}
-	SearchDirectories(&directories, isFound, itdParent, &localIsFound, pDlg);
+	SearchDirectories(&directories, isFound, itdParent, &localIsFound, pDlg, false);
 }
 
 void CIndexerView::LoadItemsFromXml(const std::string & filename, const std::string & itdParent, std::string children, string item, 
@@ -341,21 +340,20 @@ void CIndexerView::InsertFileInDB(const std::string & filename, std::string date
 	LoadCorrectFile(filename, rootFile, type);
 }
 
-void CIndexerView::SearchDirectories(std::vector<path> *directories, bool *isFound, path* itdParent, bool *localIsFound, CIndexerView *pDlg)
+void CIndexerView::SearchDirectories(std::vector<path> *directories, bool *isFound, path* itdParent, bool *localIsFound, CIndexerView *pDlg, bool isFirstLoop)
 {
 	for (path p : *directories)
 	{
 		*isFound = false;
 		HTREEITEM *rootTmp = NULL;
 		wstring name = p.filename().wstring();
-		if (!isFirstDir) {
-			isFirstDir = true;
+		if (isFirstLoop) {
 			pDlg->SendMessage(WM_ADD_TREE, (WPARAM)0, (LPARAM)name.c_str());
 		}
 		else {
 			pDlg->SendMessage(WM_ADD_TREE, (WPARAM)2, (LPARAM)name.c_str());
 		}
-		LoadFilesBuildDB(p, isFound, itdParent, pDlg);
+		LoadFilesBuildDB(p, isFound, itdParent, pDlg, false);
 		if (!(*isFound))
 		{
 			pDlg->SendMessage(WM_ADD_TREE, (WPARAM)3, (LPARAM)name.c_str());
@@ -760,7 +758,6 @@ void CIndexerView::OnBnClickedButtonfolder()
 		imalloc->Release();
 	}
 	m_strFolderPath = folderPath;
-	isFirstDir = false;
 	m_progressBar.ShowWindow(SW_SHOW);
 	m_progressBar.SetMarquee(TRUE, 15);
 	AfxBeginThread(ThreadDB, (LPVOID)this);
@@ -838,7 +835,7 @@ UINT CIndexerView::NonStaticThreadDB(LPVOID param)
 	int fileCount = 0;
 	bool b = false;
 	path p;
-	LoadFilesBuildDB(m_strFolderPath, &b, &p, pDlg);
+	LoadFilesBuildDB(m_strFolderPath, &b, &p, pDlg, true);
 	for (auto &x : filesInDb)
 		if (!x.second) DBOperations::RemoveFileFromDB(x.first);
 	for (auto &x : filesInDb) x.second = false;
