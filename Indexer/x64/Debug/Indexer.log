@@ -1,4 +1,0 @@
-﻿  Mesh.cpp
-c:\users\mikolaj\documents\github\indekser_pscc\indexer\framework\mesh.cpp(31): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
-  Indexer.vcxproj -> C:\Users\Mikolaj\Documents\GitHub\Indekser_PSCC\x64\Debug\Indexer.exe
