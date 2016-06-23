@@ -5,3 +5,7 @@
 *.obj
 *.cso
 *.opendb
+/Indexer/x64/Debug
+/x64/Debug
+/Indexer/x64/Release
+/x64/Release

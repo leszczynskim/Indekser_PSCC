@@ -767,11 +767,24 @@ void CIndexerView::OnBnClickedButtonfolder()
 void CIndexerView::OnBnClickedButtonexpand()
 {
 	ToggleTreeNode(m_tree1.GetRootItem(), TVE_EXPAND);
+	HTREEITEM nextRoot = m_tree1.GetNextItem(m_tree1.GetRootItem(), TVGN_NEXT);
+	while (nextRoot != NULL)
+	{
+		ToggleTreeNode(nextRoot, TVE_EXPAND);
+		nextRoot = m_tree1.GetNextItem(nextRoot, TVGN_NEXT);
+	}
+
 }
 
 void CIndexerView::OnBnClickedButtoncollapse()
 {
 	ToggleTreeNode(m_tree1.GetRootItem(), TVE_COLLAPSE);
+	HTREEITEM nextRoot = m_tree1.GetNextItem(m_tree1.GetRootItem(), TVGN_NEXT);
+	while (nextRoot != NULL)
+	{
+		ToggleTreeNode(nextRoot, TVE_COLLAPSE);
+		nextRoot = m_tree1.GetNextItem(nextRoot, TVGN_NEXT);
+	}
 }
 
 BOOL CIndexerView::PreTranslateMessage(MSG* pMsg)
@@ -836,6 +849,7 @@ UINT CIndexerView::NonStaticThreadDB(LPVOID param)
 	int fileCount = 0;
 	bool b = false;
 	path p;
+	tmpRoots.clear();
 	LoadFilesBuildDB(m_strFolderPath, &b, &p, pDlg, true);
 	for (auto &x : filesInDb)
 		if (!x.second) DBOperations::RemoveFileFromDB(x.first);
