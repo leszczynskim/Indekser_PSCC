@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
@@ -134,7 +134,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
@@ -167,7 +167,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
     <Midl>
@@ -198,7 +198,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
