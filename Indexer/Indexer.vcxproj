@@ -98,7 +98,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_PATH);.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4091</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions); /D_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
@@ -126,7 +126,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_PATH);.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4091</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions); /D_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
@@ -134,7 +134,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
@@ -156,7 +156,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_PATH);.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4091</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions); /D_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
@@ -167,7 +167,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
     <Midl>
@@ -188,7 +188,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0;.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_PATH);.\GC Api 11.0.26.0 %2864bit%29</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4091</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions); /D_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
@@ -198,7 +198,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Mikolaj\Downloads\boost_1_60_0\stage\lib;.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\GC Api 11.0.26.0 (64bit)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;d3d11.lib;dinput8.lib;dxguid.lib;virtual.lib;GC_API_ClassLib/GC_API_ClassLib.lib;</AdditionalDependencies>
       <ImportLibrary>sqlite3.dll</ImportLibrary>
     </Link>
