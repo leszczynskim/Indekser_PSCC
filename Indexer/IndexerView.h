@@ -113,5 +113,6 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CProgressCtrl m_progressBar;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	CButton m_folderButton;
 };
 

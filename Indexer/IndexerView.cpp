@@ -67,6 +67,7 @@ void CIndexerView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TREE1, m_tree1);
 	DDX_Control(pDX, IDC_CHECK1, m_checkBoxScaling);
 	DDX_Control(pDX, IDC_PROGRESS1, m_progressBar);
+	DDX_Control(pDX, IDC_BUTTONFOLDER, m_folderButton);
 }
 
 BOOL CIndexerView::PreCreateWindow(CREATESTRUCT& cs)
@@ -761,6 +762,7 @@ void CIndexerView::OnBnClickedButtonfolder()
 	m_strFolderPath = folderPath;
 	m_progressBar.ShowWindow(SW_SHOW);
 	m_progressBar.SetMarquee(TRUE, 15);
+	m_folderButton.EnableWindow(FALSE);
 	AfxBeginThread(ThreadDB, (LPVOID)this);
 }
 
@@ -812,6 +814,7 @@ LRESULT CIndexerView::OnTreeUpdate(WPARAM w, LPARAM p)
 	{
 		CheckFilesInDB();
 		m_progressBar.ShowWindow(SW_HIDE);
+		m_folderButton.EnableWindow(TRUE);
 		return 0;
 	}
 	if (!name) return 0;
