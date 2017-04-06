@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GC_ITBlockData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <version>6</version>
+  <blocks>
+    <GC_ITBlock>
+      <make>Nakamura WY100</make>
+      <file>4.WT25020R</file>
+      <name>4.WT25020R</name>
+      <metric>1</metric>
+      <offset_x>false</offset_x>
+      <offset_y>false</offset_y>
+      <offset_z>false</offset_z>
+      <num_orientations>2</num_orientations>
+      <match>-1</match>
+      <num_sim_files>1</num_sim_files>
+      <tool_pos>
+        <GC_ToolPos>
+          <cs>1</cs>
+          <cs_name>tool</cs_name>
+          <matrix>
+            <double>1</double>
+            <double>0</double>
+            <double>0</double>
+            <double>-0</double>
+            <double>0</double>
+            <double>1</double>
+            <double>0</double>
+            <double>-0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>1</double>
+            <double>-65</double>
+          </matrix>
+        </GC_ToolPos>
+      </tool_pos>
+      <match_tool_pos>-1</match_tool_pos>
+      <block_types />
+      <shank_sizes />
+      <default_orient>1</default_orient>
+      <default_cs>tool</default_cs>
+    </GC_ITBlock>
+    <GC_ITBlock>
+      <make>Nakamura WY100</make>
+      <file>40.5525KRTW10</file>
+      <name>40.5525KRTW10</name>
+      <metric>1</metric>
+      <offset_x>false</offset_x>
+      <offset_y>false</offset_y>
+      <offset_z>false</offset_z>
+      <num_orientations>0</num_orientations>
+      <match>-1</match>
+      <num_sim_files>1</num_sim_files>
+      <tool_pos>
+        <GC_ToolPos>
+          <cs>1</cs>
+          <cs_name>TOOL</cs_name>
+          <matrix>
+            <double>1</double>
+            <double>0</double>
+            <double>0</double>
+            <double>-0</double>
+            <double>0</double>
+            <double>1</double>
+            <double>0</double>
+            <double>-0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>1</double>
+            <double>-64.1</double>
+          </matrix>
+        </GC_ToolPos>
+      </tool_pos>
+      <match_tool_pos>-1</match_tool_pos>
+      <block_types />
+      <shank_sizes />
+      <default_orient>1</default_orient>
+      <default_cs>TOOL</default_cs>
+    </GC_ITBlock>
+    <GC_ITBlock>
+      <make>Nakamura WY100</make>
+      <file>60.5525KRTW10</file>
+      <name>60.5525KRTW10</name>
+      <metric>1</metric>
+      <offset_x>false</offset_x>
+      <offset_y>false</offset_y>
+      <offset_z>false</offset_z>
+      <num_orientations>2</num_orientations>
+      <match>-1</match>
+      <num_sim_files>1</num_sim_files>
+      <tool_pos>
+        <GC_ToolPos>
+          <cs>1</cs>
+          <cs_name>tool</cs_name>
+          <matrix>
+            <double>-6.123233995736766E-17</double>
+            <double>-6.123233995736766E-17</double>
+            <double>-1</double>
+            <double>46.058219999999949</double>
+            <double>0</double>
+            <double>1</double>
+            <double>-6.123233995736766E-17</double>
+            <double>2.3729935538570429E-13</double>
+            <double>1</double>
+            <double>-3.749399456654644E-33</double>
+            <double>-6.123233995736766E-17</double>
+            <double>-45.76137369621803</double>
+          </matrix>
+        </GC_ToolPos>
+      </tool_pos>
+      <match_tool_pos>-1</match_tool_pos>
+      <block_types />
+      <shank_sizes />
+      <default_orient>1</default_orient>
+      <default_cs>tool</default_cs>
+    </GC_ITBlock>
+    <GC_ITBlock>
+      <make>Nakamura WY100</make>
+      <file>32.2526FLEXRL</file>
+      <name>32.2526FLEXRL</name>
+      <metric>1</metric>
+      <offset_x>false</offset_x>
+      <offset_y>false</offset_y>
+      <offset_z>false</offset_z>
+      <num_orientations>0</num_orientations>
+      <match>-1</match>
+      <num_sim_files>1</num_sim_files>
+      <tool_pos>
+        <GC_ToolPos>
+          <cs>1</cs>
+          <cs_name>toolposition</cs_name>
+          <matrix>
+            <double>1</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0.9</double>
+            <double>0</double>
+            <double>1</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>1</double>
+            <double>-109</double>
+          </matrix>
+        </GC_ToolPos>
+      </tool_pos>
+      <match_tool_pos>-1</match_tool_pos>
+      <block_types />
+      <shank_sizes />
+      <default_orient>1</default_orient>
+      <default_cs>toolposition</default_cs>
+    </GC_ITBlock>
+  </blocks>
+</GC_ITBlockData>

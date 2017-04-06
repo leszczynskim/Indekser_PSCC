@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GC_ITFixtureData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <version>4</version>
+  <fixtures>
+    <GC_ITFixture>
+      <make>Nakamura WY100</make>
+      <file>pince Ø30</file>
+      <name>pince Ø30</name>
+      <fixture_type>999</fixture_type>
+      <user_type>???</user_type>
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>2</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Nakamura WY100</make>
+      <file>pince Ø30_ST2</file>
+      <name>pince Ø30_ST2</name>
+      <fixture_type>999</fixture_type>
+      <user_type>???</user_type>
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>2</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+  </fixtures>
+</GC_ITFixtureData>

@@ -1,0 +1,32 @@
+ints_begin
+"PROG_VERSION" 981
+"DATA_VERSION" 3
+"NUM_BLOCK_MAKES" 0
+"TG_1_USE_BLOCKS" 1
+"TG_1_MASTER_TG" 0
+"TG_1_MULTI_POS_BLOCKS" 0
+"TG_1_STAT_1_BLOCK_ANY" 1
+"TG_1_STAT_1_SHANK_ANY" 1
+"TG_1_STAT_1_OFFSET" 0
+"TG_1_STAT_1_ORIENT_TYPE" 0
+"TG_1_STAT_1_SUBPOS_NUM" 0
+"NUM_FIXTURE_MAKES" 1
+"NUM_ATTACHMENT_NODES" 2
+ints_end
+
+doubles_begin
+doubles_end
+
+strs_begin
+"FIXTURE_MAKE_1" "Mori Seiki NT3200"
+"ATTACH_NODE_1_NAME" "Main Spindle"
+"ATTACH_NODE_1_FIXTYPE" "Any"
+"ATTACH_NODE_2_NAME" "Sub Spindle"
+"ATTACH_NODE_2_FIXTYPE" "Any"
+strs_end
+
+int_arrays_begin
+int_arrays_end
+
+double_arrays_begin
+double_arrays_end

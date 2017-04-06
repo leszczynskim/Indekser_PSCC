@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GC_ITBlockData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <version>6</version>
+  <blocks>
+    <GC_ITBlock>
+      <make>Bumotec S128</make>
+      <file>bloc outil A90</file>
+      <name>bloc outil A90</name>
+      <metric>1</metric>
+      <offset_x>false</offset_x>
+      <offset_y>false</offset_y>
+      <offset_z>false</offset_z>
+      <num_orientations>0</num_orientations>
+      <match>-1</match>
+      <num_sim_files>1</num_sim_files>
+      <tool_pos>
+        <GC_ToolPos>
+          <cs>1</cs>
+          <cs_name>outil</cs_name>
+          <matrix>
+            <double>-6.123233995736766E-17</double>
+            <double>-1</double>
+            <double>-6.123233995736766E-17</double>
+            <double>-4.5916900433169359E-48</double>
+            <double>0</double>
+            <double>6.123233995736766E-17</double>
+            <double>-1</double>
+            <double>0</double>
+            <double>1</double>
+            <double>-6.123233995736766E-17</double>
+            <double>-3.749399456654644E-33</double>
+            <double>-20</double>
+          </matrix>
+        </GC_ToolPos>
+      </tool_pos>
+      <match_tool_pos>-1</match_tool_pos>
+      <block_types />
+      <shank_sizes />
+      <default_orient>1</default_orient>
+      <default_cs>outil</default_cs>
+    </GC_ITBlock>
+    <GC_ITBlock>
+      <make>Bumotec S128</make>
+      <file>bloc outil YZ</file>
+      <name>bloc outil YZ</name>
+      <metric>1</metric>
+      <offset_x>false</offset_x>
+      <offset_y>false</offset_y>
+      <offset_z>false</offset_z>
+      <num_orientations>0</num_orientations>
+      <match>-1</match>
+      <num_sim_files>1</num_sim_files>
+      <tool_pos>
+        <GC_ToolPos>
+          <cs>1</cs>
+          <cs_name>YZ</cs_name>
+          <matrix>
+            <double>0</double>
+            <double>-1</double>
+            <double>0</double>
+            <double>0</double>
+            <double>1</double>
+            <double>0</double>
+            <double>0</double>
+            <double>-0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>1</double>
+            <double>-20</double>
+          </matrix>
+        </GC_ToolPos>
+      </tool_pos>
+      <match_tool_pos>-1</match_tool_pos>
+      <block_types />
+      <shank_sizes />
+      <default_orient>1</default_orient>
+      <default_cs>YZ</default_cs>
+    </GC_ITBlock>
+  </blocks>
+</GC_ITBlockData>

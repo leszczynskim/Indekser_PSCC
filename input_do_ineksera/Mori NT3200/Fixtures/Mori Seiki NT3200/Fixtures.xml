@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GC_ITFixtureData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <version>4</version>
+  <fixtures>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin Main Spindel</file>
+      <name>Mandrin Main Spindel</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin D40</file>
+      <name>Mandrin D40</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin D45</file>
+      <name>Mandrin D45</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin D50</file>
+      <name>Mandrin D50</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin D60</file>
+      <name>Mandrin D60</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin D80</file>
+      <name>Mandrin D80</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin D100</file>
+      <name>Mandrin D100</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>0</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+    <GC_ITFixture>
+      <make>Mori Seiki NT3200</make>
+      <file>Mandrin Main</file>
+      <name>Mandrin Main</name>
+      <fixture_type>1</fixture_type>
+      <user_type />
+      <metric>1</metric>
+      <match>131074</match>
+      <num_sim_files>1</num_sim_files>
+      <chuck_width>138</chuck_width>
+      <gb_depth>0</gb_depth>
+      <gb_pullback_dist>0</gb_pullback_dist>
+    </GC_ITFixture>
+  </fixtures>
+</GC_ITFixtureData>

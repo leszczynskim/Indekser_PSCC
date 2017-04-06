@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GC_ITShankData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <version>1</version>
+  <units>3</units>
+  <inch_shank_sizes />
+  <metric_shank_sizes />
+</GC_ITShankData>
